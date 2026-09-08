@@ -226,7 +226,9 @@ details.acc[open] .acc-ico { transform: rotate(45deg); color: #D51E28; }
 }
 .photo::after {
   content: ''; position: absolute; inset: 0;
-  background: linear-gradient(0deg, rgba(213,30,40,.22), rgba(16,20,24,.12));
+  /* pressboard tan, sampled from the client's own material photos —
+     lighter than before so the photo underneath reads more clearly */
+  background: linear-gradient(0deg, rgba(144,117,81,.16), rgba(144,117,81,.05));
 }
 .lift:hover .photo { transform: scale(1.07); }
 
