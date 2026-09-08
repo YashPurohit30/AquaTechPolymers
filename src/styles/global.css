@@ -294,11 +294,10 @@ details.acc[open] .acc-ico { transform: rotate(45deg); color: #D51E28; }
 }
 .glow-zone:hover .cursor-glow { opacity: 1; }
 
-/* header auto-hide */
+/* header stays fixed in place at all times; only the shadow transitions in on scroll */
 header[data-head] {
-  transition: transform .45s cubic-bezier(.2,.7,.2,1), box-shadow .3s ease;
+  transition: box-shadow .3s ease;
 }
-header[data-head].hide { transform: translateY(-100%); }
 
 /* scroll to top */
 #toTop {

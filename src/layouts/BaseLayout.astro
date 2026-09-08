@@ -221,10 +221,8 @@ const allSchema = [orgSchema(), websiteSchema(), ...schema];
         }
         toTop.classList.toggle('show', y > 600);
         head.classList.toggle('shadow-lg', y > 8);
-        const lastY = Number(head.dataset.lastY ?? 0);
-        if (y > 240 && y > lastY + 4) head.classList.add('hide');
-        else if (y < lastY - 4) head.classList.remove('hide');
-        head.dataset.lastY = String(y);
+        // Header stays visible at all times, however far down the page
+        // goes — auto-hide-on-scroll-down was removed here per request.
         if (!ticking && !REDUCE) {
           ticking = true;
           requestAnimationFrame(() => { runParallax(); ticking = false; });
