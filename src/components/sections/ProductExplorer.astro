@@ -1,13 +1,33 @@
 ---
 import { getCollection } from 'astro:content';
+import { getImage } from 'astro:assets';
 import SpecTable from '@/components/ui/SpecTable.astro';
 import Icon from '@/components/ui/Icon.astro';
+import distributionSrc from '@/assets/images/hero-distribution-transformer.jpg';
+import crepeWrapSrc from '@/assets/images/hero-crepe-paper-wrap.jpg';
+import powerSrc from '@/assets/images/hero-power-transformer-substation.jpg';
+import windingSrc from '@/assets/images/winding-core.jpg';
 
 // GEO-CRITICAL: every panel is rendered into the HTML at build time and
 // toggled with CSS. Never mount panels on click — that hides four fifths
 // of the product content from AI crawlers.
 const products = (await getCollection('products')).sort(
   (a, b) => a.data.order - b.data.order
+);
+
+// Photos are contextual (what the product goes into / how it's used), not
+// product-shot photography — no photos of the adhesive itself exist yet.
+const photoByProduct: Record<string, ImageMetadata> = {
+  'pba-series': distributionSrc,
+  'crepe-paper-tube-adhesive': crepeWrapSrc,
+  'atp-power-transformer-series': powerSrc,
+  'cotton-tape': windingSrc,
+};
+const panels = await Promise.all(
+  products.map(async (p) => ({
+    product: p,
+    img: await getImage({ src: photoByProduct[p.slug], width: 720, height: 480, format: 'webp' }),
+  }))
 );
 ---
 <section id="products" class="py-24 lg:py-32 bg-bone border-y border-line">
@@ -26,42 +46,58 @@ const products = (await getCollection('products')).sort(
       </a>
     </div>
 
-    <div class="mt-12 border-b border-line overflow-x-auto rv">
-      <div class="flex gap-8 min-w-max text-[15px] text-ink/60 pb-3" role="tablist">
+    <div class="mt-12 grid lg:grid-cols-12 gap-6 lg:gap-8 items-start rv">
+      <!-- left: vertical product list -->
+      <div class="lg:col-span-4 bg-white border border-line rounded-2xl overflow-hidden divide-y divide-line"
+           role="tablist">
         {products.map((p, i) => (
-          <button class={`tab pb-3${i === 0 ? ' active' : ''}`} data-t={i}
-                  role="tab" aria-selected={i === 0} aria-controls={`panel-${i}`}>
-            {p.data.title.split(' for ')[0]}
+          <button class={`tab w-full text-left px-6 py-5 flex items-center justify-between gap-4${i === 0 ? ' active' : ''}`}
+                  data-t={i} role="tab" aria-selected={i === 0} aria-controls={`panel-${i}`}>
+            <span>
+              <span class="block font-mono text-[11px] text-red mb-1">SERIES {p.data.series}</span>
+              <span class="block font-medium text-ink">{p.data.title.split(' for ')[0].split(' — ')[0].split(' (')[0]}</span>
+            </span>
+            <span class="tab-arrow shrink-0 w-8 h-8 rounded-full border border-line flex items-center
+                         justify-center text-ink/40">
+              <Icon name="arrow" size={14} />
+            </span>
           </button>
         ))}
       </div>
-    </div>
 
-    <div class="mt-12">
-      {products.map((p, i) => (
-        <div class={`panel${i === 0 ? ' show' : ''} lg:grid-cols-12 gap-12 items-start`}
-             id={`panel-${i}`} role="tabpanel">
-          <div class="lg:col-span-6">
-            <p class="font-mono text-xs text-red mb-3">SERIES {p.data.series}</p>
-            <h3 class="text-3xl font-light leading-tight">{p.data.title}</h3>
-            <p class="mt-5 text-ink/65 leading-relaxed">{p.data.summary}</p>
-            <ul class="mt-7 space-y-3 text-ink/75">
-              {p.data.features.map((f) => (
-                <li class="flex gap-3"><span class="text-red">▹</span>{f}</li>
-              ))}
-            </ul>
-            <a href={`/products/${p.slug}`}
-               class="mt-8 inline-flex items-center gap-2 text-red font-medium hover:gap-3 transition-all">
-              Full specification
-              <Icon name="arrow" />
-            </a>
+      <!-- right: active panel, photo + description + specs -->
+      <div class="lg:col-span-8">
+        {panels.map(({ product: p, img }, i) => (
+          <div class={`panel${i === 0 ? ' show' : ''} lg:grid-cols-12 gap-8 items-start`}
+               id={`panel-${i}`} role="tabpanel">
+            <div class="lg:col-span-6">
+              <div class="photo rounded-xl" style={`--img:url('${img.src}');height:320px`}></div>
+            </div>
+            <div class="lg:col-span-6 mt-6 lg:mt-0">
+              <p class="font-mono text-xs text-red mb-3">SERIES {p.data.series}</p>
+              <h3 class="text-2xl font-light leading-tight">{p.data.title}</h3>
+              <div class="mt-3 w-10 h-0.5 bg-red"></div>
+              <p class="mt-5 text-ink/65 leading-relaxed text-[15px]">{p.data.summary}</p>
+              <a href={`/products/${p.slug}`}
+                 class="mt-6 inline-flex items-center gap-2 text-red font-medium hover:gap-3 transition-all">
+                Full specification
+                <Icon name="arrow" />
+              </a>
+            </div>
+            <div class="lg:col-span-12 mt-8">
+              <ul class="grid sm:grid-cols-2 gap-x-8 gap-y-3 text-ink/75 text-sm">
+                {p.data.features.map((f) => (
+                  <li class="flex gap-3"><span class="text-red">▹</span>{f}</li>
+                ))}
+              </ul>
+              <div class="mt-8">
+                <SpecTable specs={p.data.specs} grade={p.data.series}
+                           caption={`Typical properties for ${p.data.title}`} />
+              </div>
+            </div>
           </div>
-          <div class="lg:col-span-6 mt-10 lg:mt-0">
-            <SpecTable specs={p.data.specs} grade={p.data.series}
-                       caption={`Typical properties for ${p.data.title}`} />
-          </div>
-        </div>
-      ))}
+        ))}
+      </div>
     </div>
   </div>
 </section>

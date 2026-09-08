@@ -157,13 +157,14 @@
 }
 .dot i { position: absolute; inset: 0 100% 0 0; background: #D51E28; }
 
-/* product tabs — panels always in the DOM, toggled with CSS only */
-.tab { position: relative; transition: color .25s ease; }
-.tab.active { color: #D51E28; }
-.tab.active::after {
-  content: ''; position: absolute; left: 0; right: 0; bottom: -1px;
-  height: 2px; background: #D51E28;
+/* product tabs — vertical list, panels always in the DOM, toggled with CSS only */
+.tab {
+  position: relative; transition: color .25s ease, background-color .25s ease;
+  border-left: 3px solid transparent;
 }
+.tab.active { color: #D51E28; background: rgba(213,30,40,.05); border-left-color: #D51E28; }
+.tab.active .tab-arrow { background: #D51E28; border-color: #D51E28; color: #fff; }
+.tab-arrow { transition: background-color .25s ease, border-color .25s ease, color .25s ease; }
 .panel { display: none; }
 .panel.show { display: grid; animation: fadeUp .5s cubic-bezier(.2,.7,.2,1); }
 @keyframes fadeUp { from { opacity:0; transform:translateY(14px) } to { opacity:1; transform:none } }
