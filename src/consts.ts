@@ -27,10 +27,10 @@ export const WHATSAPP_URL =
   encodeURIComponent("Hi, I'd like to enquire about Aqua Tech Polymers products.");
 
 export const NAV = [
-  { label: 'Solutions',    href: '/#solutions' },
   { label: 'Products',     href: '/products' },
-  { label: 'Why Us',       href: '/#why-us' },
   { label: 'Applications', href: '/applications' },
+  { label: 'Solutions',    href: '/#solutions' },
+  { label: 'Why Us',       href: '/#why-us' },
   { label: 'FAQ',          href: '/#faq' },
 ] as const;
 
