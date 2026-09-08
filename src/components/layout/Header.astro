@@ -27,42 +27,49 @@ const menuItems = await Promise.all(
   }))
 );
 ---
-<header id="top" data-head
-        class="sticky top-0 z-50 bg-white/95 backdrop-blur border-b border-line">
-  <div class="max-w-[1240px] mx-auto px-5 sm:px-8 h-[74px] flex items-center justify-between">
-    <a href="/" class="flex items-center shrink-0">
-      <img src={logo.src} width={logo.attributes.width} height={logo.attributes.height}
-           alt="Aqua Tech Polymers" class="h-9 w-auto" />
-    </a>
+<header id="top" data-head class="sticky top-0 z-50 border-b border-line">
+  <!-- top strip: brand red, logo only -->
+  <div class="bg-red">
+    <div class="max-w-[1240px] mx-auto px-5 sm:px-8 h-12 flex items-center">
+      <a href="/" class="flex items-center shrink-0">
+        <img src={logo.src} width={logo.attributes.width} height={logo.attributes.height}
+             alt="Aqua Tech Polymers" class="h-7 w-auto" />
+      </a>
+    </div>
+  </div>
 
-    <nav class="hidden lg:flex items-center gap-9 text-[15px] text-ink/80" aria-label="Main">
-      {NAV.map((n) => n.label === 'Products' ? (
-        <div class="relative">
-          <button id="productsTrigger" class="nav-a flex items-center gap-1.5" aria-expanded="false"
-                  aria-controls="productsMenu">
-            Products
-            <svg id="productsChevron" width="12" height="12" viewBox="0 0 24 24" fill="none"
-                 stroke="currentColor" stroke-width="2.5" class="transition-transform" aria-hidden="true">
-              <path d="M6 9l6 6 6-6"/>
-            </svg>
-          </button>
-        </div>
-      ) : (
-        <a href={n.href} class="nav-a whitespace-nowrap">{n.label}</a>
-      ))}
-    </nav>
+  <!-- nav strip: white -->
+  <div class="bg-white/95 backdrop-blur">
+    <div class="max-w-[1240px] mx-auto px-5 sm:px-8 h-[62px] flex items-center justify-between">
+      <nav class="hidden lg:flex items-center gap-9 text-[15px] text-ink/80" aria-label="Main">
+        {NAV.map((n) => n.label === 'Products' ? (
+          <div class="relative">
+            <button id="productsTrigger" class="nav-a flex items-center gap-1.5" aria-expanded="false"
+                    aria-controls="productsMenu">
+              Products
+              <svg id="productsChevron" width="12" height="12" viewBox="0 0 24 24" fill="none"
+                   stroke="currentColor" stroke-width="2.5" class="transition-transform" aria-hidden="true">
+                <path d="M6 9l6 6 6-6"/>
+              </svg>
+            </button>
+          </div>
+        ) : (
+          <a href={n.href} class="nav-a whitespace-nowrap">{n.label}</a>
+        ))}
+      </nav>
 
-    <a href="/contact"
-       class="hidden lg:inline-flex btn btn-red items-center gap-2 text-white px-6 py-3 rounded-md font-medium text-sm whitespace-nowrap">
-      Request a sample
-      <Icon name="arrow" size={14} />
-    </a>
+      <a href="/contact"
+         class="hidden lg:inline-flex btn btn-red items-center gap-2 text-white px-6 py-3 rounded-md font-medium text-sm whitespace-nowrap ml-auto">
+        Request a sample
+        <Icon name="arrow" size={14} />
+      </a>
 
-    <button id="mBtn" class="lg:hidden w-11 h-11 rounded-md border border-line flex items-center justify-center"
-            aria-label="Toggle menu" aria-expanded="false" aria-controls="mMenu">
-      <Icon name="menu" size={22} class="block" />
-      <Icon name="close" size={22} class="hidden" />
-    </button>
+      <button id="mBtn" class="lg:hidden ml-auto w-11 h-11 rounded-md border border-line flex items-center justify-center"
+              aria-label="Toggle menu" aria-expanded="false" aria-controls="mMenu">
+        <Icon name="menu" size={22} class="block" />
+        <Icon name="close" size={22} class="hidden" />
+      </button>
+    </div>
   </div>
 
   <!-- Products mega-menu: click "Products" above to open. Same product data as
