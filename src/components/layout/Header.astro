@@ -30,17 +30,17 @@ const menuItems = await Promise.all(
 <header id="top" data-head class="sticky top-0 z-50 border-b border-line">
   <!-- top strip: brand red, logo only -->
   <div class="bg-red">
-    <div class="max-w-[1240px] mx-auto px-5 sm:px-8 h-12 flex items-center">
+    <div class="max-w-[1240px] mx-auto px-5 sm:px-8 h-16 flex items-center">
       <a href="/" class="flex items-center shrink-0">
         <img src={logo.src} width={logo.attributes.width} height={logo.attributes.height}
-             alt="Aqua Tech Polymers" class="h-7 w-auto" />
+             alt="Aqua Tech Polymers" class="h-11 w-auto" />
       </a>
     </div>
   </div>
 
-  <!-- nav strip: white -->
+  <!-- nav strip: white, kept compact since the red strip above now carries the brand -->
   <div class="bg-white/95 backdrop-blur">
-    <div class="max-w-[1240px] mx-auto px-5 sm:px-8 h-[62px] flex items-center justify-between">
+    <div class="max-w-[1240px] mx-auto px-5 sm:px-8 h-12 flex items-center justify-between">
       <nav class="hidden lg:flex items-center gap-9 text-[15px] text-ink/80" aria-label="Main">
         {NAV.map((n) => n.label === 'Products' ? (
           <div class="relative">
