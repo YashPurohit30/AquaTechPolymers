@@ -67,14 +67,23 @@ const { slides } = Astro.props;
 </section>
 
 <script>
-  const slider = document.getElementById('slider');
-  if (slider) {
-    const slides = [...slider.querySelectorAll<HTMLElement>('.slide')];
-    const dotsWrap = document.getElementById('dots')!;
-    const REDUCE = window.matchMedia('(prefers-reduced-motion:reduce)').matches;
-    const DUR = 5500;
-    let idx = 0;
-    let timer: ReturnType<typeof setInterval> | undefined;
+  // Homepage-only section — rebuilds fresh each time View Transitions lands
+  // on "/", so this all re-runs on `astro:page-load`. The keydown listener
+  // is document-level (document persists across navigations, this element
+  // doesn't), so the previous page's handler is explicitly removed first —
+  // otherwise repeated visits to "/" in one session would stack up dead
+  // handlers still referencing the old, now-detached slider.
+  let prevKeydown: ((e: KeyboardEvent) => void) | null = null;
+
+  function heroSetup() {
+    const slider = document.getElementById('slider');
+    if (slider) {
+      const slides = [...slider.querySelectorAll<HTMLElement>('.slide')];
+      const dotsWrap = document.getElementById('dots')!;
+      const REDUCE = window.matchMedia('(prefers-reduced-motion:reduce)').matches;
+      const DUR = 5500;
+      let idx = 0;
+      let timer: ReturnType<typeof setInterval> | undefined;
 
     slides.forEach((_, i) => {
       const d = document.createElement('button');
@@ -110,10 +119,13 @@ const { slides } = Astro.props;
     document.getElementById('prev')?.addEventListener('click', () => go(idx - 1));
     slider.addEventListener('mouseenter', () => clearInterval(timer));
     slider.addEventListener('mouseleave', restart);
-    document.addEventListener('keydown', (e) => {
+
+    if (prevKeydown) document.removeEventListener('keydown', prevKeydown);
+    prevKeydown = (e: KeyboardEvent) => {
       if (e.key === 'ArrowRight') go(idx + 1);
       if (e.key === 'ArrowLeft') go(idx - 1);
-    });
+    };
+    document.addEventListener('keydown', prevKeydown);
 
     let x0: number | null = null;
     slider.addEventListener('touchstart', (e) => { x0 = e.touches[0].clientX; }, { passive: true });
@@ -125,5 +137,8 @@ const { slides } = Astro.props;
     }, { passive: true });
 
     paint(); restart();
+    }
   }
+
+  document.addEventListener('astro:page-load', heroSetup);
 </script>

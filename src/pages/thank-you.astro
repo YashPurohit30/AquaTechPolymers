@@ -6,7 +6,12 @@ import EnquiryForm from '@/components/forms/EnquiryForm.astro';
 <BaseLayout title="Thank you" description="Your enquiry has been received." noindex>
   <section class="bg-ink text-white min-h-[60vh] flex items-center">
     <div class="max-w-[1240px] mx-auto px-5 sm:px-8">
-      <p class="kicker-rule text-red-2 mb-5">Enquiry received</p>
+      <svg class="success-check" width="64" height="64" viewBox="0 0 64 64" fill="none" aria-hidden="true">
+        <circle cx="32" cy="32" r="29" stroke="#D51E28" stroke-width="3" pathLength="1" class="success-ring" />
+        <path d="M20 33l8 8 16-17" stroke="#D51E28" stroke-width="3.5" stroke-linecap="round"
+              stroke-linejoin="round" pathLength="1" class="success-tick" />
+      </svg>
+      <p class="kicker-rule text-red-2 mb-5 mt-6">Enquiry received</p>
       <h1 class="leading-[1.05] font-light" style="font-size:clamp(2rem,4vw,3rem)">
         Thank you — we'll be in touch.
       </h1>

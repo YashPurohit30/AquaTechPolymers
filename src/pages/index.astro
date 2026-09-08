@@ -6,6 +6,7 @@ import Footer from '@/components/layout/Footer.astro';
 import EnquiryForm from '@/components/forms/EnquiryForm.astro';
 import HeroCarousel, { type Slide } from '@/components/sections/HeroCarousel.astro';
 import StatBar from '@/components/sections/StatBar.astro';
+import Marquee from '@/components/sections/Marquee.astro';
 import Solutions from '@/components/sections/Solutions.astro';
 import ProductExplorer from '@/components/sections/ProductExplorer.astro';
 import Applications from '@/components/sections/Applications.astro';
@@ -86,6 +87,8 @@ const faqs = [
   <HeroCarousel {slides}>
     <StatBar slot="stats" />
   </HeroCarousel>
+
+  <Marquee />
 
   <Solutions />
   <ProductExplorer />

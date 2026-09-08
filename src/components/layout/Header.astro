@@ -137,66 +137,97 @@ const menuItems = await Promise.all(
 </header>
 
 <script>
-  const btn = document.getElementById('mBtn');
-  const menu = document.getElementById('mMenu');
-  if (btn && menu) {
-    const [open, close] = btn.querySelectorAll('svg');
-    const set = (isOpen: boolean) => {
-      menu.classList.toggle('hidden', !isOpen);
-      btn.setAttribute('aria-expanded', String(isOpen));
-      open.classList.toggle('hidden', isOpen);
-      close.classList.toggle('hidden', !isOpen);
-    };
-    btn.addEventListener('click', () => set(menu.classList.contains('hidden')));
-    menu.querySelectorAll('a').forEach((a) => a.addEventListener('click', () => set(false)));
+  // Header renders fresh on every page under View Transitions, so all of
+  // this re-binds on `astro:page-load`. The two document-level listeners
+  // (outside-click, Escape) are the exception — document persists across
+  // navigations, so they're bound only once and look up the current
+  // mega-menu elements fresh each time they fire, rather than closing over
+  // a specific (possibly stale) pMenu/pTrigger reference.
+  let headerDocListenersBound = false;
+
+  function headerSetup() {
+    const btn = document.getElementById('mBtn');
+    const menu = document.getElementById('mMenu');
+    if (btn && menu) {
+      const [open, close] = btn.querySelectorAll('svg');
+      const set = (isOpen: boolean) => {
+        menu.classList.toggle('hidden', !isOpen);
+        btn.setAttribute('aria-expanded', String(isOpen));
+        open.classList.toggle('hidden', isOpen);
+        close.classList.toggle('hidden', !isOpen);
+      };
+      btn.addEventListener('click', () => set(menu.classList.contains('hidden')));
+      menu.querySelectorAll('a').forEach((a) => a.addEventListener('click', () => set(false)));
+    }
+
+    /* Products mega-menu: opens on hover (mouse), still supports click/keyboard
+       for touch and accessibility. A short close delay stops it snapping shut
+       while the pointer crosses the gap between the trigger and the panel. */
+    const pTrigger = document.getElementById('productsTrigger');
+    const pMenu = document.getElementById('productsMenu');
+    const pChevron = document.getElementById('productsChevron');
+    if (pTrigger && pMenu) {
+      let closeTimer: ReturnType<typeof setTimeout> | undefined;
+      const setMenu = (isOpen: boolean) => {
+        clearTimeout(closeTimer);
+        pMenu.classList.toggle('hidden', !isOpen);
+        pTrigger.setAttribute('aria-expanded', String(isOpen));
+        pChevron?.classList.toggle('rotate-180', isOpen);
+      };
+      const scheduleClose = () => { closeTimer = setTimeout(() => setMenu(false), 150); };
+
+      pTrigger.addEventListener('mouseenter', () => setMenu(true));
+      pMenu.addEventListener('mouseenter', () => setMenu(true));
+      pTrigger.addEventListener('mouseleave', scheduleClose);
+      pMenu.addEventListener('mouseleave', scheduleClose);
+
+      pTrigger.addEventListener('click', (e) => {
+        e.stopPropagation();
+        setMenu(pMenu.classList.contains('hidden'));
+      });
+      pTrigger.addEventListener('focus', () => setMenu(true));
+      pMenu.querySelectorAll('a').forEach((a) => a.addEventListener('click', () => setMenu(false)));
+
+      /* left-list tab switching inside the mega-menu — hover switches too */
+      const navTabs = [...pMenu.querySelectorAll<HTMLElement>('.nav-tab')];
+      const navPanels = [...pMenu.querySelectorAll<HTMLElement>('.nav-panel')];
+      const showNavTab = (t: HTMLElement) => {
+        const i = Number(t.dataset.nt);
+        navTabs.forEach((x) => { x.classList.remove('active'); x.setAttribute('aria-selected', 'false'); });
+        navPanels.forEach((p) => p.classList.remove('show'));
+        t.classList.add('active');
+        t.setAttribute('aria-selected', 'true');
+        navPanels[i]?.classList.add('show');
+      };
+      navTabs.forEach((t) => {
+        t.addEventListener('click', () => showNavTab(t));
+        t.addEventListener('mouseenter', () => showNavTab(t));
+      });
+    }
+
+    if (!headerDocListenersBound) {
+      headerDocListenersBound = true;
+      document.addEventListener('click', (e) => {
+        const menuEl = document.getElementById('productsMenu');
+        const triggerEl = document.getElementById('productsTrigger');
+        if (!menuEl || !triggerEl) return;
+        if (!menuEl.contains(e.target as Node) && e.target !== triggerEl) {
+          menuEl.classList.add('hidden');
+          triggerEl.setAttribute('aria-expanded', 'false');
+          document.getElementById('productsChevron')?.classList.remove('rotate-180');
+        }
+      });
+      document.addEventListener('keydown', (e) => {
+        if (e.key !== 'Escape') return;
+        const menuEl = document.getElementById('productsMenu');
+        const triggerEl = document.getElementById('productsTrigger');
+        if (!menuEl) return;
+        menuEl.classList.add('hidden');
+        triggerEl?.setAttribute('aria-expanded', 'false');
+        document.getElementById('productsChevron')?.classList.remove('rotate-180');
+      });
+    }
   }
 
-  /* Products mega-menu: opens on hover (mouse), still supports click/keyboard
-     for touch and accessibility. A short close delay stops it snapping shut
-     while the pointer crosses the gap between the trigger and the panel. */
-  const pTrigger = document.getElementById('productsTrigger');
-  const pMenu = document.getElementById('productsMenu');
-  const pChevron = document.getElementById('productsChevron');
-  if (pTrigger && pMenu) {
-    let closeTimer: ReturnType<typeof setTimeout> | undefined;
-    const setMenu = (isOpen: boolean) => {
-      clearTimeout(closeTimer);
-      pMenu.classList.toggle('hidden', !isOpen);
-      pTrigger.setAttribute('aria-expanded', String(isOpen));
-      pChevron?.classList.toggle('rotate-180', isOpen);
-    };
-    const scheduleClose = () => { closeTimer = setTimeout(() => setMenu(false), 150); };
-
-    pTrigger.addEventListener('mouseenter', () => setMenu(true));
-    pMenu.addEventListener('mouseenter', () => setMenu(true));
-    pTrigger.addEventListener('mouseleave', scheduleClose);
-    pMenu.addEventListener('mouseleave', scheduleClose);
-
-    pTrigger.addEventListener('click', (e) => {
-      e.stopPropagation();
-      setMenu(pMenu.classList.contains('hidden'));
-    });
-    pTrigger.addEventListener('focus', () => setMenu(true));
-    document.addEventListener('click', (e) => {
-      if (!pMenu.contains(e.target as Node) && e.target !== pTrigger) setMenu(false);
-    });
-    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') setMenu(false); });
-    pMenu.querySelectorAll('a').forEach((a) => a.addEventListener('click', () => setMenu(false)));
-
-    /* left-list tab switching inside the mega-menu — hover switches too */
-    const navTabs = [...pMenu.querySelectorAll<HTMLElement>('.nav-tab')];
-    const navPanels = [...pMenu.querySelectorAll<HTMLElement>('.nav-panel')];
-    const showNavTab = (t: HTMLElement) => {
-      const i = Number(t.dataset.nt);
-      navTabs.forEach((x) => { x.classList.remove('active'); x.setAttribute('aria-selected', 'false'); });
-      navPanels.forEach((p) => p.classList.remove('show'));
-      t.classList.add('active');
-      t.setAttribute('aria-selected', 'true');
-      navPanels[i]?.classList.add('show');
-    };
-    navTabs.forEach((t) => {
-      t.addEventListener('click', () => showNavTab(t));
-      t.addEventListener('mouseenter', () => showNavTab(t));
-    });
-  }
+  document.addEventListener('astro:page-load', headerSetup);
 </script>

@@ -5,6 +5,7 @@ import '@fontsource/ibm-plex-mono/600.css';
 import '@/styles/global.css';
 
 import { getImage } from 'astro:assets';
+import { ClientRouter } from 'astro:transitions';
 import SEOHead from '@/components/seo/SEOHead.astro';
 import Schema from '@/components/seo/Schema.astro';
 import Header from '@/components/layout/Header.astro';
@@ -30,6 +31,7 @@ const allSchema = [orgSchema(), websiteSchema(), ...schema];
 <head>
   <SEOHead {title} {description} {image} {noindex} />
   <Schema schema={allSchema} />
+  <ClientRouter />
 </head>
 <body class="font-sans text-ink bg-white">
 
@@ -57,149 +59,194 @@ const allSchema = [orgSchema(), websiteSchema(), ...schema];
   <WhatsAppFAB />
 
   <script>
-    const REDUCE = window.matchMedia('(prefers-reduced-motion:reduce)').matches;
-    const FINE = window.matchMedia('(pointer:fine)').matches;
+    // Site uses Astro's View Transitions (ClientRouter): internal navigation
+    // no longer does a hard page reload, so every element below gets torn
+    // down and freshly rebuilt on each nav. `astro:page-load` fires after
+    // the initial load AND after every transition — everything per-page
+    // (observers, curtain, per-element listeners) re-runs there safely,
+    // since old DOM/listeners are just garbage collected. The one thing
+    // that must NOT be re-added on every transition is the document-level
+    // scroll listener (document persists across navigations) — that's
+    // guarded separately below so it only ever attaches once.
+    let scrollBound = false;
+    let parallaxTargets: HTMLElement[] = [];
 
-    /* curtain — plays once per browser session, not on every internal
-       navigation (each link click is a full page load on this static site). */
-    const curtain = document.getElementById('curtain');
-    let seenCurtain = false;
-    try { seenCurtain = sessionStorage.getItem('atp-curtain-seen') === '1'; } catch {}
+    function pageSetup() {
+      const REDUCE = window.matchMedia('(prefers-reduced-motion:reduce)').matches;
+      const FINE = window.matchMedia('(pointer:fine)').matches;
 
-    if (curtain && seenCurtain) {
-      curtain.style.transition = 'none';
-      curtain.classList.add('done');
-    } else if (curtain) {
-      const drop = () => {
+      /* curtain — plays once per browser session, not on every nav */
+      const curtain = document.getElementById('curtain');
+      let seenCurtain = false;
+      try { seenCurtain = sessionStorage.getItem('atp-curtain-seen') === '1'; } catch {}
+
+      if (curtain && seenCurtain) {
+        curtain.style.transition = 'none';
         curtain.classList.add('done');
-        try { sessionStorage.setItem('atp-curtain-seen', '1'); } catch {}
-      };
-      window.addEventListener('load', () => setTimeout(drop, 750));
-      setTimeout(drop, 2600); // failsafe
-    }
-
-    /* split headings into words */
-    document.querySelectorAll<HTMLElement>('.split').forEach((h) => {
-      [...h.childNodes].forEach((n) => {
-        if (n.nodeType !== 3 || !n.textContent?.trim()) return;
-        const frag = document.createDocumentFragment();
-        n.textContent.split(/(\s+)/).forEach((tok) => {
-          if (!tok.trim()) { frag.appendChild(document.createTextNode(tok)); return; }
-          const sp = document.createElement('span');
-          sp.className = 'w'; sp.textContent = tok;
-          frag.appendChild(sp);
-        });
-        h.replaceChild(frag, n);
-      });
-      h.querySelectorAll<HTMLElement>('.w')
-       .forEach((w, i) => (w.style.transitionDelay = `${i * 55}ms`));
-    });
-
-    /* reveal + split observers */
-    const reveal = new IntersectionObserver((es) => {
-      es.forEach((e) => {
-        if (!e.isIntersecting) return;
-        const el = e.target as HTMLElement;
-        const sibs = [...(el.parentElement?.querySelectorAll('.rv') ?? [])];
-        el.style.transitionDelay = `${Math.min(sibs.indexOf(el), 5) * 80}ms`;
-        el.classList.add('in');
-        reveal.unobserve(el);
-      });
-    }, { threshold: 0.12 });
-    document.querySelectorAll('.rv').forEach((el) => reveal.observe(el));
-
-    const splits = new IntersectionObserver((es) => {
-      es.forEach((e) => {
-        if (!e.isIntersecting) return;
-        e.target.classList.add('in');
-        splits.unobserve(e.target);
-      });
-    }, { threshold: 0.25 });
-    document.querySelectorAll('.split').forEach((el) => splits.observe(el));
-
-    /* counters */
-    const counters = new IntersectionObserver((es) => {
-      es.forEach((e) => {
-        if (!e.isIntersecting) return;
-        const el = e.target as HTMLElement;
-        const to = Number(el.dataset.to ?? 0);
-        if (REDUCE) { el.textContent = String(to); counters.unobserve(el); return; }
-        let t0: number | null = null;
-        const step = (ts: number) => {
-          t0 ??= ts;
-          const p = Math.min((ts - t0) / 1400, 1);
-          el.textContent = String(Math.round(to * (1 - Math.pow(1 - p, 3))));
-          if (p < 1) requestAnimationFrame(step);
+      } else if (curtain) {
+        const drop = () => {
+          curtain.classList.add('done');
+          try { sessionStorage.setItem('atp-curtain-seen', '1'); } catch {}
         };
-        requestAnimationFrame(step);
-        counters.unobserve(el);
-      });
-    }, { threshold: 0.5 });
-    document.querySelectorAll('.count').forEach((el) => counters.observe(el));
+        setTimeout(drop, 750);
+        setTimeout(drop, 2600); // failsafe
+      }
 
-    /* magnetic buttons + 3D tilt cards + cursor glow (desktop pointer only) */
-    if (!REDUCE && FINE) {
-      document.querySelectorAll<HTMLElement>('.btn').forEach((b) => {
-        b.addEventListener('mousemove', (e) => {
-          const r = b.getBoundingClientRect();
-          const mx = e.clientX - r.left - r.width / 2;
-          const my = e.clientY - r.top - r.height / 2;
-          b.style.transform = `translate(${mx * 0.18}px, ${my * 0.28 - 2}px)`;
+      /* split headings into words */
+      document.querySelectorAll<HTMLElement>('.split').forEach((h) => {
+        [...h.childNodes].forEach((n) => {
+          if (n.nodeType !== 3 || !n.textContent?.trim()) return;
+          const frag = document.createDocumentFragment();
+          n.textContent.split(/(\s+)/).forEach((tok) => {
+            if (!tok.trim()) { frag.appendChild(document.createTextNode(tok)); return; }
+            const sp = document.createElement('span');
+            sp.className = 'w'; sp.textContent = tok;
+            frag.appendChild(sp);
+          });
+          h.replaceChild(frag, n);
         });
-        b.addEventListener('mouseleave', () => { b.style.transform = ''; });
-      });
-
-      document.querySelectorAll<HTMLElement>('.tilt').forEach((c) => {
-        c.style.transition = 'transform .35s cubic-bezier(.2,.7,.2,1), box-shadow .35s ease, border-color .35s ease';
-        c.addEventListener('mousemove', (e) => {
-          const r = c.getBoundingClientRect();
-          const px = (e.clientX - r.left) / r.width - 0.5;
-          const py = (e.clientY - r.top) / r.height - 0.5;
-          c.style.transition = 'transform .12s linear, box-shadow .35s ease, border-color .35s ease';
-          c.style.transform = `perspective(900px) rotateY(${px * 7}deg) rotateX(${-py * 7}deg) translateY(-6px)`;
-        });
-        c.addEventListener('mouseleave', () => {
-          c.style.transition = 'transform .5s cubic-bezier(.2,.7,.2,1), box-shadow .35s ease, border-color .35s ease';
-          c.style.transform = '';
-        });
+        h.querySelectorAll<HTMLElement>('.w')
+         .forEach((w, i) => (w.style.transitionDelay = `${i * 55}ms`));
       });
 
-      document.querySelectorAll<HTMLElement>('.glow-zone').forEach((z) => {
-        const g = z.querySelector<HTMLElement>('.cursor-glow');
-        if (!g) return;
-        z.addEventListener('mousemove', (e) => {
-          const r = z.getBoundingClientRect();
-          g.style.left = `${e.clientX - r.left}px`;
-          g.style.top = `${e.clientY - r.top}px`;
+      /* reveal + split observers */
+      const reveal = new IntersectionObserver((es) => {
+        es.forEach((e) => {
+          if (!e.isIntersecting) return;
+          const el = e.target as HTMLElement;
+          const sibs = [...(el.parentElement?.querySelectorAll('.rv') ?? [])];
+          el.style.transitionDelay = `${Math.min(sibs.indexOf(el), 5) * 80}ms`;
+          el.classList.add('in');
+          reveal.unobserve(el);
         });
-      });
+      }, { threshold: 0.12 });
+      document.querySelectorAll('.rv').forEach((el) => reveal.observe(el));
+
+      const splits = new IntersectionObserver((es) => {
+        es.forEach((e) => {
+          if (!e.isIntersecting) return;
+          e.target.classList.add('in');
+          splits.unobserve(e.target);
+        });
+      }, { threshold: 0.25 });
+      document.querySelectorAll('.split').forEach((el) => splits.observe(el));
+
+      /* counters */
+      const counters = new IntersectionObserver((es) => {
+        es.forEach((e) => {
+          if (!e.isIntersecting) return;
+          const el = e.target as HTMLElement;
+          const to = Number(el.dataset.to ?? 0);
+          if (REDUCE) { el.textContent = String(to); counters.unobserve(el); return; }
+          let t0: number | null = null;
+          const step = (ts: number) => {
+            t0 ??= ts;
+            const p = Math.min((ts - t0) / 1400, 1);
+            el.textContent = String(Math.round(to * (1 - Math.pow(1 - p, 3))));
+            if (p < 1) requestAnimationFrame(step);
+          };
+          requestAnimationFrame(step);
+          counters.unobserve(el);
+        });
+      }, { threshold: 0.5 });
+      document.querySelectorAll('.count').forEach((el) => counters.observe(el));
+
+      /* magnetic buttons + 3D tilt cards + cursor glow (desktop pointer only) */
+      if (!REDUCE && FINE) {
+        document.querySelectorAll<HTMLElement>('.btn').forEach((b) => {
+          b.addEventListener('mousemove', (e) => {
+            const r = b.getBoundingClientRect();
+            const mx = e.clientX - r.left - r.width / 2;
+            const my = e.clientY - r.top - r.height / 2;
+            b.style.transform = `translate(${mx * 0.18}px, ${my * 0.28 - 2}px)`;
+          });
+          b.addEventListener('mouseleave', () => { b.style.transform = ''; });
+        });
+
+        document.querySelectorAll<HTMLElement>('.tilt').forEach((c) => {
+          c.style.transition = 'transform .35s cubic-bezier(.2,.7,.2,1), box-shadow .35s ease, border-color .35s ease';
+          c.addEventListener('mousemove', (e) => {
+            const r = c.getBoundingClientRect();
+            const px = (e.clientX - r.left) / r.width - 0.5;
+            const py = (e.clientY - r.top) / r.height - 0.5;
+            c.style.transition = 'transform .12s linear, box-shadow .35s ease, border-color .35s ease';
+            c.style.transform = `perspective(900px) rotateY(${px * 7}deg) rotateX(${-py * 7}deg) translateY(-6px)`;
+          });
+          c.addEventListener('mouseleave', () => {
+            c.style.transition = 'transform .5s cubic-bezier(.2,.7,.2,1), box-shadow .35s ease, border-color .35s ease';
+            c.style.transform = '';
+          });
+        });
+
+        document.querySelectorAll<HTMLElement>('.glow-zone').forEach((z) => {
+          const g = z.querySelector<HTMLElement>('.cursor-glow');
+          if (!g) return;
+          z.addEventListener('mousemove', (e) => {
+            const r = z.getBoundingClientRect();
+            g.style.left = `${e.clientX - r.left}px`;
+            g.style.top = `${e.clientY - r.top}px`;
+          });
+        });
+      }
+
+      /* parallax: .photo card images drift slightly as they scroll through
+         the viewport. Skipped for reduced-motion; recomputed on scroll via
+         the single persistent scroll handler below. */
+      parallaxTargets = REDUCE ? [] : [...document.querySelectorAll<HTMLElement>('.photo')];
+
+      let ticking = false;
+      const runParallax = () => {
+        const vh = window.innerHeight;
+        parallaxTargets.forEach((el) => {
+          const r = el.getBoundingClientRect();
+          if (r.bottom < 0 || r.top > vh) return;
+          const prog = (r.top + r.height / 2 - vh / 2) / vh;
+          el.style.backgroundPosition = `center calc(50% + ${prog * 26}px)`;
+        });
+      };
+      const onScroll = () => {
+        const bar = document.getElementById('bar');
+        const head = document.querySelector<HTMLElement>('[data-head]');
+        const toTop = document.getElementById('toTop');
+        const ring = document.getElementById('ringFill') as SVGCircleElement | null;
+        if (!bar || !head || !toTop) return;
+        const h = document.documentElement;
+        const y = h.scrollTop;
+        const prog = y / (h.scrollHeight - h.clientHeight || 1);
+        bar.style.width = `${prog * 100}%`;
+        const C = 2 * Math.PI * 24;
+        if (ring) {
+          ring.style.strokeDasharray = String(C);
+          ring.style.strokeDashoffset = String(C * (1 - prog));
+        }
+        toTop.classList.toggle('show', y > 600);
+        head.classList.toggle('shadow-lg', y > 8);
+        const lastY = Number(head.dataset.lastY ?? 0);
+        if (y > 240 && y > lastY + 4) head.classList.add('hide');
+        else if (y < lastY - 4) head.classList.remove('hide');
+        head.dataset.lastY = String(y);
+        if (!ticking && !REDUCE) {
+          ticking = true;
+          requestAnimationFrame(() => { runParallax(); ticking = false; });
+        }
+      };
+
+      // paint the correct state immediately for the page just landed on
+      onScroll();
+      runParallax();
+
+      /* one-time (document persists across transitions) */
+      if (!scrollBound) {
+        scrollBound = true;
+        document.addEventListener('scroll', onScroll, { passive: true });
+        document.addEventListener('click', (e) => {
+          const btn = (e.target as HTMLElement).closest('#toTop');
+          if (btn) window.scrollTo({ top: 0, behavior: REDUCE ? 'auto' : 'smooth' });
+        });
+      }
     }
 
-    /* scroll: progress bar, header auto-hide, back-to-top ring */
-    const bar = document.getElementById('bar')!;
-    const head = document.querySelector<HTMLElement>('[data-head]')!;
-    const toTop = document.getElementById('toTop')!;
-    const ring = document.getElementById('ringFill') as SVGCircleElement | null;
-    const C = 2 * Math.PI * 24;
-    if (ring) { ring.style.strokeDasharray = String(C); ring.style.strokeDashoffset = String(C); }
-    toTop.addEventListener('click', () =>
-      window.scrollTo({ top: 0, behavior: REDUCE ? 'auto' : 'smooth' }));
-
-    let lastY = 0;
-    const onScroll = () => {
-      const h = document.documentElement;
-      const y = h.scrollTop;
-      const prog = y / (h.scrollHeight - h.clientHeight || 1);
-      bar.style.width = `${prog * 100}%`;
-      if (ring) ring.style.strokeDashoffset = String(C * (1 - prog));
-      toTop.classList.toggle('show', y > 600);
-      head.classList.toggle('shadow-lg', y > 8);
-      if (y > 240 && y > lastY + 4) head.classList.add('hide');
-      else if (y < lastY - 4) head.classList.remove('hide');
-      lastY = y;
-    };
-    document.addEventListener('scroll', onScroll, { passive: true });
-    onScroll();
+    document.addEventListener('astro:page-load', pageSetup);
   </script>
 </body>
 </html>

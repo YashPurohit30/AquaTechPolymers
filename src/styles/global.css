@@ -278,6 +278,35 @@ header[data-head].hide { transform: translateY(-100%); }
 #toTop .ring circle { fill: none; stroke-width: 2.5; }
 @media (min-width: 640px) { #toTop { bottom: 6.6rem; right: 1.75rem; } }
 
+/* thank-you page success checkmark — draws on once, on load */
+.success-ring, .success-tick {
+  stroke-dasharray: 1; stroke-dashoffset: 1;
+  animation: draw .6s ease forwards;
+}
+.success-tick { animation-delay: .55s; }
+@keyframes draw { to { stroke-dashoffset: 0; } }
+@media (prefers-reduced-motion: reduce) {
+  .success-ring, .success-tick { animation: none; stroke-dashoffset: 0; }
+}
+
+/* marquee — infinite scrolling fact strip */
+.marquee-track {
+  display: flex; width: max-content;
+  animation: marquee 32s linear infinite;
+}
+.marquee:hover .marquee-track { animation-play-state: paused; }
+@keyframes marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+
+/* gradient shift — slow colour "breathing" on CTA bands */
+.gradient-shift {
+  background-size: 200% 200%;
+  animation: gradientShift 10s ease infinite;
+}
+@keyframes gradientShift {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
   #curtain { display: none; }
@@ -285,4 +314,5 @@ header[data-head].hide { transform: translateY(-100%); }
   .slide.is-active .slide-media { animation: none; transform: none; }
   .slide .s-a { opacity: 1; transform: none; animation: none; }
   .btn, .lift, .photo { transition: none; }
+  .marquee-track, .gradient-shift { animation: none; }
 }
