@@ -1,0 +1,87 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import Footer from '@/components/layout/Footer.astro';
+import EnquiryForm from '@/components/forms/EnquiryForm.astro';
+import CTABand from '@/components/sections/CTABand.astro';
+import WhyUs from '@/components/sections/WhyUs.astro';
+import { breadcrumbSchema } from '@/lib/schema';
+import { SITE } from '@/consts';
+
+const schema = [breadcrumbSchema([
+  { name: 'Home', url: '/' },
+  { name: 'About', url: '/about' },
+])];
+---
+<BaseLayout
+  title="About Aqua Tech Polymers"
+  description="Aqua Tech Polymers has manufactured bonding adhesives for the transformer and electrical insulation industry since 2004 — now an Indian alternative to imported adhesives."
+  {schema}
+>
+  <section class="bg-ink text-white pt-16 pb-20">
+    <div class="max-w-[1240px] mx-auto px-5 sm:px-8">
+      <p class="kicker-rule text-red-2 mb-5">Who we are</p>
+      <h1 class="leading-[1.05] font-light max-w-3xl" style="font-size:clamp(2.2rem,4.4vw,3.4rem)">
+        About Aqua Tech Polymers
+      </h1>
+      <p class="mt-6 text-white/70 text-lg max-w-2xl leading-relaxed font-light">
+        Specialised adhesive solutions designed around the requirements of the transformer and
+        electrical insulation industry — manufactured in India since {SITE.founded}.
+      </p>
+    </div>
+  </section>
+
+  <section class="py-20 lg:py-28">
+    <div class="max-w-[1240px] mx-auto px-5 sm:px-8 grid lg:grid-cols-12 gap-14 items-start">
+      <div class="lg:col-span-4 rv">
+        <p class="kicker-rule text-red mb-5">Our story</p>
+        <h2 class="split leading-[1.08] font-light" style="font-size:clamp(1.9rem,3.2vw,2.6rem)">
+          Built around the coil shop, not a catalogue
+        </h2>
+      </div>
+      <div class="lg:col-span-8 rv">
+        <p class="text-ink/65 leading-relaxed">
+          Aqua Tech Polymers has been manufacturing bonding adhesives for the transformer and
+          electrical insulation industry since {SITE.founded}. What started as a focused bonding
+          adhesive line has grown into a range built specifically around how transformer
+          manufacturers actually work — the PBA series for distribution transformer bonding, CPT
+          for crepe paper tube manufacturing, the ATP series for high-strength bonding on 8–10
+          foot power transformer insulation cylinders, and cotton tape for winding and binding.
+        </p>
+        <p class="mt-5 text-ink/65 leading-relaxed">
+          We don't believe in a one-formula-fits-all approach. Every manufacturing process is
+          different — material combinations, application methods, production speeds and curing
+          conditions vary from one manufacturer to another — so our objective from the start has
+          been to develop adhesive solutions that fit the application, rather than asking
+          customers to adapt their process to suit the material.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="py-20 lg:py-28 bg-bone border-y border-line">
+    <div class="max-w-[1240px] mx-auto px-5 sm:px-8 max-w-3xl rv">
+      <p class="kicker-rule text-red mb-5">An Indian alternative</p>
+      <h2 class="split leading-[1.08] font-light" style="font-size:clamp(1.9rem,3.2vw,2.6rem)">
+        An Indian alternative to imported adhesives
+      </h2>
+      <p class="mt-5 text-ink/65 leading-relaxed">
+        We are supplying adhesive solutions to leading power transformer manufacturers in India,
+        with customers entering into annual supply contracts for their regular requirements —
+        positioned as a cost-effective Indian alternative to imported German adhesive solutions.
+        Our objective is not simply to replace an imported product. We aim to provide a solution
+        that can match the customer's technical requirements while delivering significant
+        commercial value.
+      </p>
+      <a href="/power-transformer-adhesives" class="mt-6 inline-flex items-center gap-2 text-red font-medium hover:gap-3 transition-all">
+        Read the full Power Transformer story
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+             stroke-width="2.5" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+      </a>
+    </div>
+  </section>
+
+  <WhyUs />
+
+  <CTABand />
+  <Footer slot="footer"><EnquiryForm slot="form" /></Footer>
+</BaseLayout>
