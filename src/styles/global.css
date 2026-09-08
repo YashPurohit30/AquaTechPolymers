@@ -91,15 +91,17 @@
     border-color: theme('colors.red');
   }
 
+  /* rolled back to the pill box (client's sketch reference wants this
+     shape, not the flush full-height rectangle) — now with a visible
+     border at all times, not just on hover. */
   .nav-a {
-    @apply relative flex items-center;
-    height: 100%;
-    padding: 0 .9rem;
-    transition: background-color .25s ease, color .25s ease;
+    @apply relative;
+    padding: .5rem .9rem;
+    border-radius: .5rem;
+    border: 1.5px solid theme('colors.line');
+    transition: background-color .25s ease, color .25s ease, border-color .25s ease;
   }
-  /* flush rectangle, no rounding — so the hover box's top edge touches the
-     red strip above with no visible white gap */
-  .nav-a:hover { background-color: theme('colors.red'); color: #fff; }
+  .nav-a:hover { background-color: theme('colors.red'); color: #fff; border-color: theme('colors.red'); }
 }
 
 /* ---------------- motion ---------------- */
