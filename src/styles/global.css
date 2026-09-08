@@ -91,13 +91,13 @@
     border-color: theme('colors.red');
   }
 
-  .nav-a { @apply relative; }
-  .nav-a::after {
-    content: ''; position: absolute; left: 0; bottom: -6px;
-    height: 2px; width: 0; background: theme('colors.red');
-    transition: width .28s ease;
+  .nav-a {
+    @apply relative;
+    padding: .5rem .9rem;
+    border-radius: .5rem;
+    transition: background-color .25s ease, color .25s ease;
   }
-  .nav-a:hover::after { width: 100%; }
+  .nav-a:hover { background-color: theme('colors.red'); color: #fff; }
 }
 
 /* ---------------- motion ---------------- */
