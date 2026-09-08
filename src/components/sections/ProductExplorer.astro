@@ -105,14 +105,18 @@ const panels = await Promise.all(
 <script>
   const tabs = [...document.querySelectorAll<HTMLElement>('.tab')];
   const panels = [...document.querySelectorAll<HTMLElement>('.panel')];
+  const showTab = (t: HTMLElement) => {
+    const i = Number(t.dataset.t);
+    tabs.forEach((x) => { x.classList.remove('active'); x.setAttribute('aria-selected', 'false'); });
+    panels.forEach((p) => p.classList.remove('show'));
+    t.classList.add('active');
+    t.setAttribute('aria-selected', 'true');
+    panels[i]?.classList.add('show');
+  };
+  const FINE = window.matchMedia('(pointer:fine)').matches;
   tabs.forEach((t) => {
-    t.addEventListener('click', () => {
-      const i = Number(t.dataset.t);
-      tabs.forEach((x) => { x.classList.remove('active'); x.setAttribute('aria-selected', 'false'); });
-      panels.forEach((p) => p.classList.remove('show'));
-      t.classList.add('active');
-      t.setAttribute('aria-selected', 'true');
-      panels[i]?.classList.add('show');
-    });
+    t.addEventListener('click', () => showTab(t));
+    // hover switches too, but only for mouse/trackpad — touch devices rely on tap
+    if (FINE) t.addEventListener('mouseenter', () => showTab(t));
   });
 </script>

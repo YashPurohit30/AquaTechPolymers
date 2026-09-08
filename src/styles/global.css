@@ -127,9 +127,11 @@
 @keyframes kenburns { from { transform: scale(1.06) } to { transform: scale(1.14) } }
 .slide-media::after {
   content: ''; position: absolute; inset: 0;
+  /* left side stays dark enough for text contrast; right side lightened so
+     the photo reads through clearly instead of looking blackish overall */
   background:
-    linear-gradient(90deg, rgba(16,20,24,.94) 0%, rgba(16,20,24,.78) 45%, rgba(16,20,24,.45) 100%),
-    linear-gradient(0deg, rgba(142,8,16,.30), rgba(16,20,24,.25));
+    linear-gradient(90deg, rgba(16,20,24,.85) 0%, rgba(16,20,24,.6) 45%, rgba(16,20,24,.22) 100%),
+    linear-gradient(0deg, rgba(142,8,16,.14), rgba(16,20,24,.1));
 }
 .slide-inner { position: absolute; inset: 0; display: flex; align-items: center; z-index: 3; }
 .slide .s-a { opacity: 0; transform: translateY(22px); }
