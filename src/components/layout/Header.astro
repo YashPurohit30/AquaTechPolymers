@@ -26,6 +26,20 @@ const menuItems = await Promise.all(
     img: await getImage({ src: photoByProduct[p.slug], width: 480, height: 320, format: 'webp' }),
   }))
 );
+
+// Same pattern for the Applications dropdown — reuses the same two photos
+// already imported above, keyed by application slug instead of product slug.
+const applications = (await getCollection('applications')).sort((a, b) => a.data.order - b.data.order);
+const photoByApplication: Record<string, ImageMetadata> = {
+  'distribution-transformers': distributionSrc,
+  'power-transformers': powerSrc,
+};
+const appMenuItems = await Promise.all(
+  applications.map(async (a) => ({
+    app: a,
+    img: await getImage({ src: photoByApplication[a.slug], width: 480, height: 320, format: 'webp' }),
+  }))
+);
 ---
 <header id="top" data-head class="sticky top-0 z-50 border-b border-line">
   <!-- top strip: brand red, logo only -->
@@ -48,6 +62,17 @@ const menuItems = await Promise.all(
                     aria-controls="productsMenu">
               Products
               <svg id="productsChevron" width="12" height="12" viewBox="0 0 24 24" fill="none"
+                   stroke="currentColor" stroke-width="2.5" class="transition-transform" aria-hidden="true">
+                <path d="M6 9l6 6 6-6"/>
+              </svg>
+            </button>
+          </div>
+        ) : n.label === 'Applications' ? (
+          <div class="relative">
+            <button id="applicationsTrigger" class="nav-a flex items-center gap-1.5" aria-expanded="false"
+                    aria-controls="applicationsMenu">
+              Applications
+              <svg id="applicationsChevron" width="12" height="12" viewBox="0 0 24 24" fill="none"
                    stroke="currentColor" stroke-width="2.5" class="transition-transform" aria-hidden="true">
                 <path d="M6 9l6 6 6-6"/>
               </svg>
@@ -126,6 +151,56 @@ const menuItems = await Promise.all(
     </div>
   </div>
 
+  <!-- Applications mega-menu: same pattern as Products above. -->
+  <div id="applicationsMenu" class="hidden absolute left-0 right-0 top-full bg-white border-b border-line shadow-2xl">
+    <div class="max-w-[1240px] mx-auto px-5 sm:px-8 pt-6">
+      <div class="flex items-center justify-between pb-5 border-b border-line">
+        <p class="font-mono text-xs text-steel">WHERE IT GOES</p>
+        <a href="/applications" class="font-mono text-xs text-red inline-flex items-center gap-2
+                                       hover:gap-3 transition-all">
+          View all applications
+          <Icon name="arrow" size={13} />
+        </a>
+      </div>
+    </div>
+    <div class="max-w-[1240px] mx-auto px-5 sm:px-8 py-8 grid grid-cols-12 gap-8">
+      <div class="col-span-4 border border-line rounded-2xl overflow-hidden divide-y divide-line" role="tablist">
+        {appMenuItems.map(({ app: a }, i) => (
+          <button class={`nav-tab w-full text-left px-5 py-4 flex items-center justify-between gap-3${i === 0 ? ' active' : ''}`}
+                  data-nt={i} role="tab" aria-selected={i === 0} aria-controls={`app-nav-panel-${i}`}>
+            <span class="block font-medium text-sm text-ink">
+              {a.data.title.replace(/^Compounds for /, '')}
+            </span>
+            <span class="nav-tab-arrow shrink-0 w-7 h-7 rounded-full border border-line flex items-center
+                         justify-center text-ink/40">
+              <Icon name="arrow" size={12} />
+            </span>
+          </button>
+        ))}
+      </div>
+
+      <div class="col-span-8">
+        {appMenuItems.map(({ app: a, img }, i) => (
+          <div class={`nav-panel${i === 0 ? ' show' : ''} grid-cols-12 gap-6 items-start`}
+               id={`app-nav-panel-${i}`} role="tabpanel">
+            <div class="col-span-5">
+              <div class="photo rounded-lg" style={`--img:url('${img.src}');height:150px`}></div>
+            </div>
+            <div class="col-span-7">
+              <h3 class="text-lg font-medium leading-tight">{a.data.title}</h3>
+              <p class="mt-2 text-ink/60 text-sm leading-relaxed line-clamp-3">{a.data.summary}</p>
+              <a href={`/applications/${a.slug}`}
+                 class="mt-3 inline-flex items-center gap-2 text-red text-sm font-medium hover:gap-3 transition-all">
+                View application
+                <Icon name="arrow" size={13} />
+              </a>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </div>
+
   <div id="mMenu" class="lg:hidden hidden border-t border-line bg-white">
     <nav class="max-w-[1240px] mx-auto px-5 py-3 flex flex-col divide-y divide-line" aria-label="Mobile">
       {NAV.map((n) => <a href={n.href} class="py-3.5">{n.label}</a>)}
@@ -160,37 +235,50 @@ const menuItems = await Promise.all(
       menu.querySelectorAll('a').forEach((a) => a.addEventListener('click', () => set(false)));
     }
 
-    /* Products mega-menu: opens on hover (mouse), still supports click/keyboard
-       for touch and accessibility. A short close delay stops it snapping shut
-       while the pointer crosses the gap between the trigger and the panel. */
-    const pTrigger = document.getElementById('productsTrigger');
-    const pMenu = document.getElementById('productsMenu');
-    const pChevron = document.getElementById('productsChevron');
-    if (pTrigger && pMenu) {
+    /* Mega-menus (Products, Applications): same wiring for both, generalised
+       so the logic isn't duplicated. Opens on hover (mouse), still supports
+       click/keyboard for touch and accessibility. A short close delay stops
+       it snapping shut while the pointer crosses the gap between the
+       trigger and the panel. Opening one closes the other. */
+    type MegaMenuIds = { trigger: string; menu: string; chevron: string };
+    const megaMenus: MegaMenuIds[] = [
+      { trigger: 'productsTrigger', menu: 'productsMenu', chevron: 'productsChevron' },
+      { trigger: 'applicationsTrigger', menu: 'applicationsMenu', chevron: 'applicationsChevron' },
+    ];
+    const setters: Array<(isOpen: boolean) => void> = [];
+
+    megaMenus.forEach(({ trigger: triggerId, menu: menuId, chevron: chevronId }, idx) => {
+      const trigger = document.getElementById(triggerId);
+      const menu = document.getElementById(menuId);
+      const chevron = document.getElementById(chevronId);
+      if (!trigger || !menu) { setters.push(() => {}); return; }
+
       let closeTimer: ReturnType<typeof setTimeout> | undefined;
       const setMenu = (isOpen: boolean) => {
         clearTimeout(closeTimer);
-        pMenu.classList.toggle('hidden', !isOpen);
-        pTrigger.setAttribute('aria-expanded', String(isOpen));
-        pChevron?.classList.toggle('rotate-180', isOpen);
+        menu.classList.toggle('hidden', !isOpen);
+        trigger.setAttribute('aria-expanded', String(isOpen));
+        chevron?.classList.toggle('rotate-180', isOpen);
+        if (isOpen) setters.forEach((s, i) => { if (i !== idx) s(false); });
       };
+      setters.push(setMenu);
       const scheduleClose = () => { closeTimer = setTimeout(() => setMenu(false), 150); };
 
-      pTrigger.addEventListener('mouseenter', () => setMenu(true));
-      pMenu.addEventListener('mouseenter', () => setMenu(true));
-      pTrigger.addEventListener('mouseleave', scheduleClose);
-      pMenu.addEventListener('mouseleave', scheduleClose);
+      trigger.addEventListener('mouseenter', () => setMenu(true));
+      menu.addEventListener('mouseenter', () => setMenu(true));
+      trigger.addEventListener('mouseleave', scheduleClose);
+      menu.addEventListener('mouseleave', scheduleClose);
 
-      pTrigger.addEventListener('click', (e) => {
+      trigger.addEventListener('click', (e) => {
         e.stopPropagation();
-        setMenu(pMenu.classList.contains('hidden'));
+        setMenu(menu.classList.contains('hidden'));
       });
-      pTrigger.addEventListener('focus', () => setMenu(true));
-      pMenu.querySelectorAll('a').forEach((a) => a.addEventListener('click', () => setMenu(false)));
+      trigger.addEventListener('focus', () => setMenu(true));
+      menu.querySelectorAll('a').forEach((a) => a.addEventListener('click', () => setMenu(false)));
 
-      /* left-list tab switching inside the mega-menu — hover switches too */
-      const navTabs = [...pMenu.querySelectorAll<HTMLElement>('.nav-tab')];
-      const navPanels = [...pMenu.querySelectorAll<HTMLElement>('.nav-panel')];
+      /* left-list tab switching inside this mega-menu — hover switches too */
+      const navTabs = [...menu.querySelectorAll<HTMLElement>('.nav-tab')];
+      const navPanels = [...menu.querySelectorAll<HTMLElement>('.nav-panel')];
       const showNavTab = (t: HTMLElement) => {
         const i = Number(t.dataset.nt);
         navTabs.forEach((x) => { x.classList.remove('active'); x.setAttribute('aria-selected', 'false'); });
@@ -203,29 +291,26 @@ const menuItems = await Promise.all(
         t.addEventListener('click', () => showNavTab(t));
         t.addEventListener('mouseenter', () => showNavTab(t));
       });
-    }
+    });
 
     if (!headerDocListenersBound) {
       headerDocListenersBound = true;
+      const closeAll = () => {
+        megaMenus.forEach(({ trigger: triggerId, menu: menuId, chevron: chevronId }) => {
+          document.getElementById(menuId)?.classList.add('hidden');
+          document.getElementById(triggerId)?.setAttribute('aria-expanded', 'false');
+          document.getElementById(chevronId)?.classList.remove('rotate-180');
+        });
+      };
       document.addEventListener('click', (e) => {
-        const menuEl = document.getElementById('productsMenu');
-        const triggerEl = document.getElementById('productsTrigger');
-        if (!menuEl || !triggerEl) return;
-        if (!menuEl.contains(e.target as Node) && e.target !== triggerEl) {
-          menuEl.classList.add('hidden');
-          triggerEl.setAttribute('aria-expanded', 'false');
-          document.getElementById('productsChevron')?.classList.remove('rotate-180');
-        }
+        const insideAny = megaMenus.some(({ trigger: triggerId, menu: menuId }) => {
+          const menuEl = document.getElementById(menuId);
+          const triggerEl = document.getElementById(triggerId);
+          return (menuEl && menuEl.contains(e.target as Node)) || e.target === triggerEl;
+        });
+        if (!insideAny) closeAll();
       });
-      document.addEventListener('keydown', (e) => {
-        if (e.key !== 'Escape') return;
-        const menuEl = document.getElementById('productsMenu');
-        const triggerEl = document.getElementById('productsTrigger');
-        if (!menuEl) return;
-        menuEl.classList.add('hidden');
-        triggerEl?.setAttribute('aria-expanded', 'false');
-        document.getElementById('productsChevron')?.classList.remove('rotate-180');
-      });
+      document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeAll(); });
     }
   }
 
