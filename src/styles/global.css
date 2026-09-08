@@ -15,18 +15,18 @@
                panels): simpler two-tone gradient, no gloss highlight, so
                it doesn't look busy at small sizes. */
 .bg-ink {
-  background-color: #6B3410;
+  background-color: #8A5228;
   background-image:
-    radial-gradient(140% 100% at 15% -20%, rgba(255,214,170,.22), transparent 55%),
-    linear-gradient(135deg, #7A3D18 0%, #B8703F 45%, #8B4A2B 75%, #5C2E15 100%);
+    radial-gradient(140% 100% at 15% -20%, rgba(255,228,198,.4), transparent 62%),
+    linear-gradient(135deg, #A8683A 0%, #D69A5F 45%, #B87D48 75%, #8A5228 100%);
 }
 .bg-ink-2 {
-  background-color: #5C3018;
-  background-image: linear-gradient(135deg, #6B3D24 0%, #8B5530 100%);
+  background-color: #7A4A2A;
+  background-image: linear-gradient(135deg, #8B5A38 0%, #B07845 100%);
 }
 .bg-ink-3 {
-  background-color: #6B3D24;
-  background-image: linear-gradient(135deg, #7D4A2C 0%, #9B6238 100%);
+  background-color: #8B5A38;
+  background-image: linear-gradient(135deg, #9D6A42 0%, #C08A54 100%);
 }
 
 @layer base {
@@ -105,10 +105,10 @@
 /* page-load curtain */
 #curtain {
   position: fixed; inset: 0; z-index: 200;
-  background-color: #6B3410;
+  background-color: #8A5228;
   background-image:
-    radial-gradient(140% 100% at 15% -20%, rgba(255,214,170,.22), transparent 55%),
-    linear-gradient(135deg, #7A3D18 0%, #B8703F 45%, #8B4A2B 75%, #5C2E15 100%);
+    radial-gradient(140% 100% at 15% -20%, rgba(255,228,198,.4), transparent 62%),
+    linear-gradient(135deg, #A8683A 0%, #D69A5F 45%, #B87D48 75%, #8A5228 100%);
   display: flex; align-items: center; justify-content: center;
   transition: transform 1s cubic-bezier(.76,0,.24,1), opacity .6s ease .35s;
 }
@@ -298,8 +298,8 @@ header[data-head].hide { transform: translateY(-100%); }
 #toTop {
   position: fixed; z-index: 90; bottom: 5.9rem; right: 1.25rem;
   width: 46px; height: 46px; border-radius: 999px;
-  background-color: #5C3018;
-  background-image: linear-gradient(135deg, #6B3D24 0%, #8B5530 100%);
+  background-color: #7A4A2A;
+  background-image: linear-gradient(135deg, #8B5A38 0%, #B07845 100%);
   color: #fff;
   display: flex; align-items: center; justify-content: center;
   opacity: 0; transform: translateY(14px) scale(.9); pointer-events: none;
