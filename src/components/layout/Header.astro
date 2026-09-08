@@ -130,12 +130,12 @@ const appMenuItems = await Promise.all(
 
       <div class="col-span-8">
         {menuItems.map(({ product: p, img }, i) => (
-          <div class={`nav-panel${i === 0 ? ' show' : ''} grid-cols-12 gap-6 items-start`}
+          <div class={`nav-panel${i === 0 ? ' show' : ''} grid-cols-12 gap-8 items-center`}
                id={`nav-panel-${i}`} role="tabpanel">
-            <div class="col-span-5">
+            <div class="col-span-6">
               <div class="photo rounded-lg" style={`--img:url('${img.src}');height:150px`}></div>
             </div>
-            <div class="col-span-7">
+            <div class="col-span-6">
               <p class="font-mono text-[10px] text-red mb-2">SERIES {p.data.series}</p>
               <h3 class="text-lg font-medium leading-tight">{p.data.title}</h3>
               <p class="mt-2 text-ink/60 text-sm leading-relaxed line-clamp-3">{p.data.summary}</p>
@@ -181,12 +181,12 @@ const appMenuItems = await Promise.all(
 
       <div class="col-span-8">
         {appMenuItems.map(({ app: a, img }, i) => (
-          <div class={`nav-panel${i === 0 ? ' show' : ''} grid-cols-12 gap-6 items-start`}
+          <div class={`nav-panel${i === 0 ? ' show' : ''} grid-cols-12 gap-8 items-center`}
                id={`app-nav-panel-${i}`} role="tabpanel">
-            <div class="col-span-5">
+            <div class="col-span-6">
               <div class="photo rounded-lg" style={`--img:url('${img.src}');height:150px`}></div>
             </div>
-            <div class="col-span-7">
+            <div class="col-span-6">
               <h3 class="text-lg font-medium leading-tight">{a.data.title}</h3>
               <p class="mt-2 text-ink/60 text-sm leading-relaxed line-clamp-3">{a.data.summary}</p>
               <a href={`/applications/${a.slug}`}
