@@ -139,20 +139,32 @@ const menuItems = await Promise.all(
     menu.querySelectorAll('a').forEach((a) => a.addEventListener('click', () => set(false)));
   }
 
-  /* Products mega-menu: click to open/close, click outside or Escape to close */
+  /* Products mega-menu: opens on hover (mouse), still supports click/keyboard
+     for touch and accessibility. A short close delay stops it snapping shut
+     while the pointer crosses the gap between the trigger and the panel. */
   const pTrigger = document.getElementById('productsTrigger');
   const pMenu = document.getElementById('productsMenu');
   const pChevron = document.getElementById('productsChevron');
   if (pTrigger && pMenu) {
+    let closeTimer: ReturnType<typeof setTimeout> | undefined;
     const setMenu = (isOpen: boolean) => {
+      clearTimeout(closeTimer);
       pMenu.classList.toggle('hidden', !isOpen);
       pTrigger.setAttribute('aria-expanded', String(isOpen));
       pChevron?.classList.toggle('rotate-180', isOpen);
     };
+    const scheduleClose = () => { closeTimer = setTimeout(() => setMenu(false), 150); };
+
+    pTrigger.addEventListener('mouseenter', () => setMenu(true));
+    pMenu.addEventListener('mouseenter', () => setMenu(true));
+    pTrigger.addEventListener('mouseleave', scheduleClose);
+    pMenu.addEventListener('mouseleave', scheduleClose);
+
     pTrigger.addEventListener('click', (e) => {
       e.stopPropagation();
       setMenu(pMenu.classList.contains('hidden'));
     });
+    pTrigger.addEventListener('focus', () => setMenu(true));
     document.addEventListener('click', (e) => {
       if (!pMenu.contains(e.target as Node) && e.target !== pTrigger) setMenu(false);
     });
