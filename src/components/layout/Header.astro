@@ -58,25 +58,25 @@ const appMenuItems = await Promise.all(
       <nav class="hidden lg:flex items-center gap-2 text-[17px] font-semibold text-ink/80" aria-label="Main">
         {NAV.map((n) => n.label === 'Products' ? (
           <div class="relative">
-            <button id="productsTrigger" class="nav-a flex items-center gap-1.5" aria-expanded="false"
-                    aria-controls="productsMenu">
+            <a href="/products" id="productsTrigger" class="nav-a flex items-center gap-1.5" aria-expanded="false"
+               aria-controls="productsMenu">
               Products
               <svg id="productsChevron" width="12" height="12" viewBox="0 0 24 24" fill="none"
                    stroke="currentColor" stroke-width="2.5" class="transition-transform" aria-hidden="true">
                 <path d="M6 9l6 6 6-6"/>
               </svg>
-            </button>
+            </a>
           </div>
         ) : n.label === 'Applications' ? (
           <div class="relative">
-            <button id="applicationsTrigger" class="nav-a flex items-center gap-1.5" aria-expanded="false"
-                    aria-controls="applicationsMenu">
+            <a href="/applications" id="applicationsTrigger" class="nav-a flex items-center gap-1.5" aria-expanded="false"
+               aria-controls="applicationsMenu">
               Applications
               <svg id="applicationsChevron" width="12" height="12" viewBox="0 0 24 24" fill="none"
                    stroke="currentColor" stroke-width="2.5" class="transition-transform" aria-hidden="true">
                 <path d="M6 9l6 6 6-6"/>
               </svg>
-            </button>
+            </a>
           </div>
         ) : (
           <a href={n.href} class="nav-a whitespace-nowrap">{n.label}</a>
@@ -269,10 +269,10 @@ const appMenuItems = await Promise.all(
       trigger.addEventListener('mouseleave', scheduleClose);
       menu.addEventListener('mouseleave', scheduleClose);
 
-      trigger.addEventListener('click', (e) => {
-        e.stopPropagation();
-        setMenu(menu.classList.contains('hidden'));
-      });
+      // trigger is now a real link (was a toggle-only button — clicking it
+      // did nothing but open the preview, never actually navigated to the
+      // page). Hover/focus still show the preview; a click just follows
+      // the link natively, same as any other nav item.
       trigger.addEventListener('focus', () => setMenu(true));
       menu.querySelectorAll('a').forEach((a) => a.addEventListener('click', () => setMenu(false)));
 
