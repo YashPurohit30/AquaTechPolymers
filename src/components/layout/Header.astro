@@ -14,6 +14,12 @@ import insulationKitSrc from '@/assets/images/electrical-insulation-components.j
 
 const logo = await getImage({ src: logoSrc, width: logoSrc.width, format: 'webp' });
 
+// Large, light backdrop image behind each dropdown panel — same idea as the
+// hero, just heavily faded (opacity + white gradient) so it reads as texture
+// behind the white panel rather than competing with the actual content.
+const productsMenuBg = await getImage({ src: powerSrc, width: 1400, format: 'webp' });
+const applicationsMenuBg = await getImage({ src: distributionSrc, width: 1400, format: 'webp' });
+
 // Same product data + contextual photos as the homepage ProductExplorer
 // section — this dropdown is a compact preview of that same content.
 const products = (await getCollection('products')).sort((a, b) => a.data.order - b.data.order);
@@ -104,8 +110,11 @@ const appMenuItems = await Promise.all(
   <!-- Products mega-menu: click "Products" above to open. Same product data as
        the homepage explorer, rendered here too (not hidden behind JS-only
        mount) so it isn't invisible to crawlers. -->
-  <div id="productsMenu" class="hidden absolute left-0 right-0 top-full bg-white border border-line shadow-2xl">
-    <div class="max-w-[1240px] mx-auto px-5 sm:px-8 pt-6">
+  <div id="productsMenu" class="hidden absolute left-0 right-0 top-full bg-white border border-line shadow-2xl overflow-hidden">
+    <div class="absolute inset-0 opacity-[0.07]"
+         style={`background-image:url('${productsMenuBg.src}');background-size:cover;background-position:center`}></div>
+    <div class="absolute inset-0 bg-gradient-to-b from-white via-white/70 to-white"></div>
+    <div class="relative max-w-[1240px] mx-auto px-5 sm:px-8 pt-6">
       <div class="flex items-center justify-between pb-5 border-b border-line">
         <p class="font-mono text-xs text-steel">OUR PRODUCTS</p>
         <a href="/products" class="font-mono text-xs text-red inline-flex items-center gap-2
@@ -115,13 +124,12 @@ const appMenuItems = await Promise.all(
         </a>
       </div>
     </div>
-    <div class="max-w-[1240px] mx-auto px-5 sm:px-8 py-8 grid grid-cols-12 gap-10 items-center">
+    <div class="relative max-w-[1240px] mx-auto px-5 sm:px-8 py-8 grid grid-cols-12 gap-10 items-center">
       <div class="col-span-4 border border-line rounded-2xl overflow-hidden divide-y divide-line" role="tablist">
         {menuItems.map(({ product: p }, i) => (
           <div class={`nav-tab flex items-center justify-between gap-3${i === 0 ? ' active' : ''}`}
                data-nt={i} role="tab" aria-selected={i === 0} aria-controls={`nav-panel-${i}`}>
             <button type="button" class="flex-1 min-w-0 text-left pl-5 py-4">
-              <span class="block font-mono text-[10px] text-red mb-0.5">SERIES {p.data.series}</span>
               <span class="block font-medium text-sm text-ink">{p.data.title.split(' for ')[0].split(' — ')[0].split(' (')[0]}</span>
             </button>
             <a href={`/products/${p.slug}`} aria-label={`View full specification: ${p.data.title}`}
@@ -141,7 +149,6 @@ const appMenuItems = await Promise.all(
               <div class="photo rounded-lg" style={`--img:url('${img.src}');height:150px`}></div>
             </div>
             <div class="col-span-6">
-              <p class="font-mono text-[10px] text-red mb-2">SERIES {p.data.series}</p>
               <h3 class="text-lg font-medium leading-tight">{p.data.title}</h3>
               <p class="mt-2 text-ink/60 text-sm leading-relaxed line-clamp-3">{p.data.summary}</p>
               <a href={`/products/${p.slug}`}
@@ -157,8 +164,11 @@ const appMenuItems = await Promise.all(
   </div>
 
   <!-- Applications mega-menu: same pattern as Products above. -->
-  <div id="applicationsMenu" class="hidden absolute left-0 right-0 top-full bg-white border border-line shadow-2xl">
-    <div class="max-w-[1240px] mx-auto px-5 sm:px-8 pt-6">
+  <div id="applicationsMenu" class="hidden absolute left-0 right-0 top-full bg-white border border-line shadow-2xl overflow-hidden">
+    <div class="absolute inset-0 opacity-[0.07]"
+         style={`background-image:url('${applicationsMenuBg.src}');background-size:cover;background-position:center`}></div>
+    <div class="absolute inset-0 bg-gradient-to-b from-white via-white/70 to-white"></div>
+    <div class="relative max-w-[1240px] mx-auto px-5 sm:px-8 pt-6">
       <div class="flex items-center justify-between pb-5 border-b border-line">
         <p class="font-mono text-xs text-steel">WHERE IT GOES</p>
         <a href="/applications" class="font-mono text-xs text-red inline-flex items-center gap-2
@@ -168,7 +178,7 @@ const appMenuItems = await Promise.all(
         </a>
       </div>
     </div>
-    <div class="max-w-[1240px] mx-auto px-5 sm:px-8 py-8 grid grid-cols-12 gap-10 items-center">
+    <div class="relative max-w-[1240px] mx-auto px-5 sm:px-8 py-8 grid grid-cols-12 gap-10 items-center">
       <div class="col-span-4 border border-line rounded-2xl overflow-hidden divide-y divide-line" role="tablist">
         {appMenuItems.map(({ app: a }, i) => (
           <div class={`nav-tab flex items-center justify-between gap-3${i === 0 ? ' active' : ''}`}

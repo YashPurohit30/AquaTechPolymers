@@ -36,8 +36,7 @@ const schema = [breadcrumbSchema([
       {products.map((p) => (
         <a href={`/products/${p.slug}`}
            class="lift bg-white border border-line rounded-2xl p-8 block rv">
-          <p class="font-mono text-xs text-red">{p.data.series}</p>
-          <h2 class="text-xl font-medium mt-4">{p.data.title}</h2>
+          <h2 class="text-xl font-medium">{p.data.title}</h2>
           <p class="text-sm text-ink/60 mt-3 leading-relaxed">{p.data.summary}</p>
           <span class="mt-5 inline-flex items-center gap-2 text-red text-sm font-medium">
             Specification <Icon name="arrow" size={14} />
