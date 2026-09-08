@@ -9,12 +9,9 @@ const logo = await getImage({ src: logoSrc, width: logoSrc.width, format: 'webp'
 <header id="top" data-head
         class="sticky top-0 z-50 bg-white/95 backdrop-blur border-b border-line">
   <div class="max-w-[1240px] mx-auto px-5 sm:px-8 h-[74px] flex items-center justify-between">
-    <a href="/" class="flex items-center gap-4">
+    <a href="/" class="flex items-center shrink-0">
       <img src={logo.src} width={logo.attributes.width} height={logo.attributes.height}
            alt="Aqua Tech Polymers" class="h-9 w-auto" />
-      <span class="hidden md:block kicker text-steel text-[9px] leading-tight border-l border-line pl-4 whitespace-nowrap">
-        Bonding Adhesives · Crepe Paper Tubes · Cotton Tape
-      </span>
     </a>
 
     <nav class="hidden lg:flex items-center gap-9 text-[15px] text-ink/80" aria-label="Main">
