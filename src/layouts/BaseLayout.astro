@@ -4,13 +4,16 @@ import '@fontsource/ibm-plex-mono/500.css';
 import '@fontsource/ibm-plex-mono/600.css';
 import '@/styles/global.css';
 
+import { getImage } from 'astro:assets';
 import SEOHead from '@/components/seo/SEOHead.astro';
 import Schema from '@/components/seo/Schema.astro';
 import Header from '@/components/layout/Header.astro';
-import Logo from '@/components/layout/Logo.astro';
 import WhatsAppFAB from '@/components/forms/WhatsAppFAB.astro';
 import Icon from '@/components/ui/Icon.astro';
 import { orgSchema, websiteSchema } from '@/lib/schema';
+import logoSrc from '@/assets/images/logo.png';
+
+const logo = await getImage({ src: logoSrc, width: logoSrc.width, format: 'webp' });
 
 interface Props {
   title: string;
@@ -31,13 +34,9 @@ const allSchema = [orgSchema(), websiteSchema(), ...schema];
 <body class="font-sans text-ink bg-white">
 
   <div id="curtain">
-    <div class="mark flex items-center gap-3">
-      <span class="w-12 h-12 rounded-lg bg-ink-2 flex items-center justify-center">
-        <Logo class="w-10 h-10" dark />
-      </span>
-      <span class="text-white text-lg font-medium tracking-tight">
-        Aqua Tech <span class="text-red">Polymers</span>
-      </span>
+    <div class="mark">
+      <img src={logo.src} width={logo.attributes.width} height={logo.attributes.height}
+           alt="Aqua Tech Polymers" class="h-12 w-auto" />
     </div>
     <span class="sweep"></span>
   </div>
@@ -61,11 +60,23 @@ const allSchema = [orgSchema(), websiteSchema(), ...schema];
     const REDUCE = window.matchMedia('(prefers-reduced-motion:reduce)').matches;
     const FINE = window.matchMedia('(pointer:fine)').matches;
 
-    /* curtain */
+    /* curtain — plays once per browser session, not on every internal
+       navigation (each link click is a full page load on this static site). */
     const curtain = document.getElementById('curtain');
-    const drop = () => curtain?.classList.add('done');
-    window.addEventListener('load', () => setTimeout(drop, 750));
-    setTimeout(drop, 2600); // failsafe
+    let seenCurtain = false;
+    try { seenCurtain = sessionStorage.getItem('atp-curtain-seen') === '1'; } catch {}
+
+    if (curtain && seenCurtain) {
+      curtain.style.transition = 'none';
+      curtain.classList.add('done');
+    } else if (curtain) {
+      const drop = () => {
+        curtain.classList.add('done');
+        try { sessionStorage.setItem('atp-curtain-seen', '1'); } catch {}
+      };
+      window.addEventListener('load', () => setTimeout(drop, 750));
+      setTimeout(drop, 2600); // failsafe
+    }
 
     /* split headings into words */
     document.querySelectorAll<HTMLElement>('.split').forEach((h) => {

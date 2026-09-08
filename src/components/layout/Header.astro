@@ -1,22 +1,19 @@
 ---
+import { getImage } from 'astro:assets';
 import { NAV } from '@/consts';
-import Logo from './Logo.astro';
 import Icon from '@/components/ui/Icon.astro';
+import logoSrc from '@/assets/images/logo.png';
+
+const logo = await getImage({ src: logoSrc, width: logoSrc.width, format: 'webp' });
 ---
 <header id="top" data-head
         class="sticky top-0 z-50 bg-white/95 backdrop-blur border-b border-line">
   <div class="max-w-[1240px] mx-auto px-5 sm:px-8 h-[74px] flex items-center justify-between">
-    <a href="/" class="flex items-center gap-3">
-      <span class="w-10 h-10 rounded-lg bg-ink flex items-center justify-center">
-        <Logo class="w-8 h-8" dark />
-      </span>
-      <span class="leading-none">
-        <span class="block text-[17px] font-semibold tracking-tight">
-          Aqua Tech <span class="text-red">Polymers</span>
-        </span>
-        <span class="block kicker text-steel text-[9px] mt-1.5">
-          Bonding Adhesives · Crepe Paper Tubes · Cotton Tape
-        </span>
+    <a href="/" class="flex items-center gap-4">
+      <img src={logo.src} width={logo.attributes.width} height={logo.attributes.height}
+           alt="Aqua Tech Polymers" class="h-9 w-auto" />
+      <span class="hidden md:block kicker text-steel text-[9px] leading-tight border-l border-line pl-4 whitespace-nowrap">
+        Bonding Adhesives · Crepe Paper Tubes · Cotton Tape
       </span>
     </a>
 
