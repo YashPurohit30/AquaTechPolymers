@@ -55,9 +55,9 @@ const appMenuItems = await Promise.all(
   <!-- nav strip: white, kept compact since the red strip above now carries the brand -->
   <div class="bg-white/95 backdrop-blur">
     <div class="max-w-[1240px] mx-auto px-5 sm:px-8 h-14 flex items-center justify-end gap-8">
-      <nav class="hidden lg:flex items-center gap-2 text-[17px] font-semibold text-ink/80" aria-label="Main">
+      <nav class="hidden lg:flex items-stretch self-stretch gap-2 text-[17px] font-semibold text-ink/80" aria-label="Main">
         {NAV.map((n) => n.label === 'Products' ? (
-          <div class="relative">
+          <div class="relative flex items-stretch">
             <a href="/products" id="productsTrigger" class="nav-a flex items-center gap-1.5" aria-expanded="false"
                aria-controls="productsMenu">
               Products
@@ -68,7 +68,7 @@ const appMenuItems = await Promise.all(
             </a>
           </div>
         ) : n.label === 'Applications' ? (
-          <div class="relative">
+          <div class="relative flex items-stretch">
             <a href="/applications" id="applicationsTrigger" class="nav-a flex items-center gap-1.5" aria-expanded="false"
                aria-controls="applicationsMenu">
               Applications
