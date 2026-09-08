@@ -1,0 +1,52 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import Footer from '@/components/layout/Footer.astro';
+import EnquiryForm from '@/components/forms/EnquiryForm.astro';
+import CTABand from '@/components/sections/CTABand.astro';
+import Icon from '@/components/ui/Icon.astro';
+import { breadcrumbSchema } from '@/lib/schema';
+
+const products = (await getCollection('products')).sort((a, b) => a.data.order - b.data.order);
+const schema = [breadcrumbSchema([
+  { name: 'Home', url: '/' },
+  { name: 'Products', url: '/products' },
+])];
+---
+<BaseLayout
+  title="Products — Bonding Adhesives, Crepe Paper Tube Adhesive & Cotton Tape"
+  description="PBA and ATP bonding adhesives, CPT crepe paper tube adhesive and cotton tape for transformer and electrical insulation manufacturing."
+  {schema}
+>
+  <section class="bg-ink text-white pt-16 pb-20">
+    <div class="max-w-[1240px] mx-auto px-5 sm:px-8">
+      <p class="kicker-rule text-red-2 mb-5">The range</p>
+      <h1 class="leading-[1.05] font-light max-w-3xl" style="font-size:clamp(2.2rem,4.4vw,3.4rem)">
+        Adhesives and materials for transformer manufacturing
+      </h1>
+      <p class="mt-6 text-white/70 text-lg max-w-2xl leading-relaxed font-light">
+        Bonding adhesives, crepe paper tube adhesive and cotton tape — customised to your
+        materials, process and performance requirements.
+      </p>
+    </div>
+  </section>
+
+  <section class="py-20 lg:py-28">
+    <div class="max-w-[1240px] mx-auto px-5 sm:px-8 grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+      {products.map((p) => (
+        <a href={`/products/${p.slug}`}
+           class="lift bg-white border border-line rounded-2xl p-8 block rv">
+          <p class="font-mono text-xs text-red">{p.data.series}</p>
+          <h2 class="text-xl font-medium mt-4">{p.data.title}</h2>
+          <p class="text-sm text-ink/60 mt-3 leading-relaxed">{p.data.summary}</p>
+          <span class="mt-5 inline-flex items-center gap-2 text-red text-sm font-medium">
+            Specification <Icon name="arrow" size={14} />
+          </span>
+        </a>
+      ))}
+    </div>
+  </section>
+
+  <CTABand />
+  <Footer slot="footer"><EnquiryForm slot="form" /></Footer>
+</BaseLayout>

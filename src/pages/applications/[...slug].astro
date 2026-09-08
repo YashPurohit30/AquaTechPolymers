@@ -1,0 +1,72 @@
+---
+import { getCollection, type CollectionEntry } from 'astro:content';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import Footer from '@/components/layout/Footer.astro';
+import EnquiryForm from '@/components/forms/EnquiryForm.astro';
+import CTABand from '@/components/sections/CTABand.astro';
+import Icon from '@/components/ui/Icon.astro';
+import { breadcrumbSchema } from '@/lib/schema';
+
+export async function getStaticPaths() {
+  const apps = await getCollection('applications');
+  return apps.map((entry) => ({ params: { slug: entry.slug }, props: { entry } }));
+}
+
+interface Props { entry: CollectionEntry<'applications'> }
+const { entry } = Astro.props;
+const { data } = entry;
+const { Content } = await entry.render();
+
+const related = await getCollection('products', (p) =>
+  data.relatedProducts.includes(p.slug));
+
+const schema = [breadcrumbSchema([
+  { name: 'Home', url: '/' },
+  { name: 'Applications', url: '/applications' },
+  { name: data.title, url: `/applications/${entry.slug}` },
+])];
+---
+<BaseLayout title={data.metaTitle} description={data.metaDescription} {schema}>
+  <section class="bg-ink text-white pt-16 pb-20">
+    <div class="max-w-[1240px] mx-auto px-5 sm:px-8">
+      <nav aria-label="Breadcrumb" class="font-mono text-xs text-steel mb-8">
+        <a href="/" class="hover:text-white">Home</a><span class="mx-2">/</span>
+        <a href="/applications" class="hover:text-white">Applications</a>
+      </nav>
+      <h1 class="leading-[1.05] font-light max-w-3xl" style="font-size:clamp(2.2rem,4.4vw,3.4rem)">
+        {data.title}
+      </h1>
+      <p class="mt-6 text-white/70 text-lg max-w-2xl leading-relaxed font-light">{data.summary}</p>
+    </div>
+  </section>
+
+  <section class="py-20 lg:py-28">
+    <div class="max-w-[1240px] mx-auto px-5 sm:px-8 max-w-3xl">
+      <div class="prose prose-lg max-w-none prose-headings:font-medium prose-p:text-ink/70">
+        <Content />
+      </div>
+    </div>
+  </section>
+
+  {related.length > 0 && (
+    <section class="py-20 bg-bone border-y border-line">
+      <div class="max-w-[1240px] mx-auto px-5 sm:px-8">
+        <h2 class="text-2xl font-light mb-8">Recommended products</h2>
+        <div class="grid sm:grid-cols-3 gap-5">
+          {related.map((p) => (
+            <a href={`/products/${p.slug}`} class="lift bg-white border border-line rounded-2xl p-7 block">
+              <p class="font-mono text-xs text-red">{p.data.series}</p>
+              <h3 class="text-lg font-medium mt-3">{p.data.title}</h3>
+              <span class="mt-4 inline-flex items-center gap-2 text-red text-sm">
+                Specification <Icon name="arrow" size={14} />
+              </span>
+            </a>
+          ))}
+        </div>
+      </div>
+    </section>
+  )}
+
+  <CTABand />
+  <Footer slot="footer"><EnquiryForm slot="form" /></Footer>
+</BaseLayout>

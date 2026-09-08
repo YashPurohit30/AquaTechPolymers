@@ -1,0 +1,60 @@
+---
+// Web3Forms — static-host friendly. Replace the access key before launch.
+const ACCESS_KEY = import.meta.env.PUBLIC_WEB3FORMS_KEY ?? 'YOUR-ACCESS-KEY';
+---
+<form action="https://api.web3forms.com/submit" method="POST"
+      class="bg-ink-2 border border-white/10 rounded-2xl p-8">
+  <input type="hidden" name="access_key" value={ACCESS_KEY} />
+  <input type="hidden" name="subject" value="New enquiry — Aqua Tech Polymers" />
+  <input type="hidden" name="redirect" value="https://aquatechpolymers.com/thank-you" />
+  <input type="checkbox" name="botcheck" class="hidden" style="display:none" tabindex="-1" aria-hidden="true" />
+
+  <div class="grid sm:grid-cols-2 gap-5">
+    <div>
+      <label for="name" class="font-mono text-[11px] tracking-wider text-steel">NAME</label>
+      <input id="name" name="name" type="text" required autocomplete="name"
+             class="mt-2 w-full bg-ink border border-white/15 rounded-lg px-4 py-3.5
+                    text-white placeholder-white/25 focus:border-red-2 focus:outline-none transition"
+             placeholder="Your name" />
+    </div>
+    <div>
+      <label for="company" class="font-mono text-[11px] tracking-wider text-steel">COMPANY</label>
+      <input id="company" name="company" type="text" required autocomplete="organization"
+             class="mt-2 w-full bg-ink border border-white/15 rounded-lg px-4 py-3.5
+                    text-white placeholder-white/25 focus:border-red-2 focus:outline-none transition"
+             placeholder="Company name" />
+    </div>
+    <div>
+      <label for="email" class="font-mono text-[11px] tracking-wider text-steel">EMAIL</label>
+      <input id="email" name="email" type="email" required autocomplete="email"
+             class="mt-2 w-full bg-ink border border-white/15 rounded-lg px-4 py-3.5
+                    text-white placeholder-white/25 focus:border-red-2 focus:outline-none transition"
+             placeholder="you@company.com" />
+    </div>
+    <div>
+      <label for="thermal" class="font-mono text-[11px] tracking-wider text-steel">APPLICATION</label>
+      <input id="thermal" name="application" type="text"
+             class="mt-2 w-full bg-ink border border-white/15 rounded-lg px-4 py-3.5
+                    text-white placeholder-white/25 focus:border-red-2 focus:outline-none transition"
+             placeholder="e.g. Distribution transformer / Power transformer" />
+    </div>
+  </div>
+
+  <div class="mt-5">
+    <label for="req" class="font-mono text-[11px] tracking-wider text-steel">
+      YOUR PROCESS &amp; REQUIREMENT
+    </label>
+    <textarea id="req" name="requirement" rows="3" required
+              class="mt-2 w-full bg-ink border border-white/15 rounded-lg px-4 py-3.5
+                     text-white placeholder-white/25 focus:border-red-2 focus:outline-none transition"
+              placeholder="Cure method, substrate, monthly volume…"></textarea>
+  </div>
+
+  <button type="submit"
+          class="mt-6 btn btn-red w-full sm:w-auto inline-flex items-center justify-center gap-2
+                 text-white px-8 py-4 rounded-md font-medium">
+    Send enquiry
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+         stroke-width="2.5" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+  </button>
+</form>

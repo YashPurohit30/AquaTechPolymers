@@ -1,0 +1,25 @@
+---
+import type { Spec } from '@/lib/schema';
+interface Props { specs: Spec[]; grade?: string; caption?: string; dark?: boolean }
+const { specs, grade, caption, dark = true } = Astro.props;
+---
+<div class={dark ? 'bg-ink text-white rounded-2xl p-8' : 'rounded-2xl p-8 border border-line'}>
+  {grade && (
+    <p class="font-mono text-xs text-red-2 border-b border-white/10 pb-4 mb-5">
+      TYPICAL GRADE · {grade}
+    </p>
+  )}
+  <table class="w-full border-collapse">
+    {caption && <caption class="sr-only">{caption}</caption>}
+    <tbody>
+      {specs.map((s) => (
+        <tr class="border-b border-white/5 last:border-0">
+          <th scope="row" class="text-left py-3 text-sm font-normal text-white/55">{s.label}</th>
+          <td class="py-3 text-right text-sm font-mono">
+            {s.value}{s.unit && ` ${s.unit}`}
+          </td>
+        </tr>
+      ))}
+    </tbody>
+  </table>
+</div>

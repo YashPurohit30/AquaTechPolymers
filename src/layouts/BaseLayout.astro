@@ -1,0 +1,194 @@
+---
+import '@fontsource-variable/inter';
+import '@fontsource/ibm-plex-mono/500.css';
+import '@fontsource/ibm-plex-mono/600.css';
+import '@/styles/global.css';
+
+import SEOHead from '@/components/seo/SEOHead.astro';
+import Schema from '@/components/seo/Schema.astro';
+import Header from '@/components/layout/Header.astro';
+import Logo from '@/components/layout/Logo.astro';
+import WhatsAppFAB from '@/components/forms/WhatsAppFAB.astro';
+import Icon from '@/components/ui/Icon.astro';
+import { orgSchema, websiteSchema } from '@/lib/schema';
+
+interface Props {
+  title: string;
+  description: string;
+  schema?: object[];
+  image?: string;
+  noindex?: boolean;
+}
+const { title, description, schema = [], image, noindex } = Astro.props;
+const allSchema = [orgSchema(), websiteSchema(), ...schema];
+---
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <SEOHead {title} {description} {image} {noindex} />
+  <Schema schema={allSchema} />
+</head>
+<body class="font-sans text-ink bg-white">
+
+  <div id="curtain">
+    <div class="mark flex items-center gap-3">
+      <span class="w-12 h-12 rounded-lg bg-ink-2 flex items-center justify-center">
+        <Logo class="w-10 h-10" dark />
+      </span>
+      <span class="text-white text-lg font-medium tracking-tight">
+        Aqua Tech <span class="text-red">Polymers</span>
+      </span>
+    </div>
+    <span class="sweep"></span>
+  </div>
+
+  <div id="bar"></div>
+
+  <button id="toTop" aria-label="Back to top">
+    <svg class="ring" viewBox="0 0 52 52" aria-hidden="true">
+      <circle cx="26" cy="26" r="24" stroke="rgba(255,255,255,.18)" />
+      <circle id="ringFill" cx="26" cy="26" r="24" stroke="#D51E28" stroke-linecap="round" />
+    </svg>
+    <Icon name="up" size={16} />
+  </button>
+
+  <Header />
+  <main><slot /></main>
+  <slot name="footer" />
+  <WhatsAppFAB />
+
+  <script>
+    const REDUCE = window.matchMedia('(prefers-reduced-motion:reduce)').matches;
+    const FINE = window.matchMedia('(pointer:fine)').matches;
+
+    /* curtain */
+    const curtain = document.getElementById('curtain');
+    const drop = () => curtain?.classList.add('done');
+    window.addEventListener('load', () => setTimeout(drop, 750));
+    setTimeout(drop, 2600); // failsafe
+
+    /* split headings into words */
+    document.querySelectorAll<HTMLElement>('.split').forEach((h) => {
+      [...h.childNodes].forEach((n) => {
+        if (n.nodeType !== 3 || !n.textContent?.trim()) return;
+        const frag = document.createDocumentFragment();
+        n.textContent.split(/(\s+)/).forEach((tok) => {
+          if (!tok.trim()) { frag.appendChild(document.createTextNode(tok)); return; }
+          const sp = document.createElement('span');
+          sp.className = 'w'; sp.textContent = tok;
+          frag.appendChild(sp);
+        });
+        h.replaceChild(frag, n);
+      });
+      h.querySelectorAll<HTMLElement>('.w')
+       .forEach((w, i) => (w.style.transitionDelay = `${i * 55}ms`));
+    });
+
+    /* reveal + split observers */
+    const reveal = new IntersectionObserver((es) => {
+      es.forEach((e) => {
+        if (!e.isIntersecting) return;
+        const el = e.target as HTMLElement;
+        const sibs = [...(el.parentElement?.querySelectorAll('.rv') ?? [])];
+        el.style.transitionDelay = `${Math.min(sibs.indexOf(el), 5) * 80}ms`;
+        el.classList.add('in');
+        reveal.unobserve(el);
+      });
+    }, { threshold: 0.12 });
+    document.querySelectorAll('.rv').forEach((el) => reveal.observe(el));
+
+    const splits = new IntersectionObserver((es) => {
+      es.forEach((e) => {
+        if (!e.isIntersecting) return;
+        e.target.classList.add('in');
+        splits.unobserve(e.target);
+      });
+    }, { threshold: 0.25 });
+    document.querySelectorAll('.split').forEach((el) => splits.observe(el));
+
+    /* counters */
+    const counters = new IntersectionObserver((es) => {
+      es.forEach((e) => {
+        if (!e.isIntersecting) return;
+        const el = e.target as HTMLElement;
+        const to = Number(el.dataset.to ?? 0);
+        if (REDUCE) { el.textContent = String(to); counters.unobserve(el); return; }
+        let t0: number | null = null;
+        const step = (ts: number) => {
+          t0 ??= ts;
+          const p = Math.min((ts - t0) / 1400, 1);
+          el.textContent = String(Math.round(to * (1 - Math.pow(1 - p, 3))));
+          if (p < 1) requestAnimationFrame(step);
+        };
+        requestAnimationFrame(step);
+        counters.unobserve(el);
+      });
+    }, { threshold: 0.5 });
+    document.querySelectorAll('.count').forEach((el) => counters.observe(el));
+
+    /* magnetic buttons + 3D tilt cards + cursor glow (desktop pointer only) */
+    if (!REDUCE && FINE) {
+      document.querySelectorAll<HTMLElement>('.btn').forEach((b) => {
+        b.addEventListener('mousemove', (e) => {
+          const r = b.getBoundingClientRect();
+          const mx = e.clientX - r.left - r.width / 2;
+          const my = e.clientY - r.top - r.height / 2;
+          b.style.transform = `translate(${mx * 0.18}px, ${my * 0.28 - 2}px)`;
+        });
+        b.addEventListener('mouseleave', () => { b.style.transform = ''; });
+      });
+
+      document.querySelectorAll<HTMLElement>('.tilt').forEach((c) => {
+        c.style.transition = 'transform .35s cubic-bezier(.2,.7,.2,1), box-shadow .35s ease, border-color .35s ease';
+        c.addEventListener('mousemove', (e) => {
+          const r = c.getBoundingClientRect();
+          const px = (e.clientX - r.left) / r.width - 0.5;
+          const py = (e.clientY - r.top) / r.height - 0.5;
+          c.style.transition = 'transform .12s linear, box-shadow .35s ease, border-color .35s ease';
+          c.style.transform = `perspective(900px) rotateY(${px * 7}deg) rotateX(${-py * 7}deg) translateY(-6px)`;
+        });
+        c.addEventListener('mouseleave', () => {
+          c.style.transition = 'transform .5s cubic-bezier(.2,.7,.2,1), box-shadow .35s ease, border-color .35s ease';
+          c.style.transform = '';
+        });
+      });
+
+      document.querySelectorAll<HTMLElement>('.glow-zone').forEach((z) => {
+        const g = z.querySelector<HTMLElement>('.cursor-glow');
+        if (!g) return;
+        z.addEventListener('mousemove', (e) => {
+          const r = z.getBoundingClientRect();
+          g.style.left = `${e.clientX - r.left}px`;
+          g.style.top = `${e.clientY - r.top}px`;
+        });
+      });
+    }
+
+    /* scroll: progress bar, header auto-hide, back-to-top ring */
+    const bar = document.getElementById('bar')!;
+    const head = document.querySelector<HTMLElement>('[data-head]')!;
+    const toTop = document.getElementById('toTop')!;
+    const ring = document.getElementById('ringFill') as SVGCircleElement | null;
+    const C = 2 * Math.PI * 24;
+    if (ring) { ring.style.strokeDasharray = String(C); ring.style.strokeDashoffset = String(C); }
+    toTop.addEventListener('click', () =>
+      window.scrollTo({ top: 0, behavior: REDUCE ? 'auto' : 'smooth' }));
+
+    let lastY = 0;
+    const onScroll = () => {
+      const h = document.documentElement;
+      const y = h.scrollTop;
+      const prog = y / (h.scrollHeight - h.clientHeight || 1);
+      bar.style.width = `${prog * 100}%`;
+      if (ring) ring.style.strokeDashoffset = String(C * (1 - prog));
+      toTop.classList.toggle('show', y > 600);
+      head.classList.toggle('shadow-lg', y > 8);
+      if (y > 240 && y > lastY + 4) head.classList.add('hide');
+      else if (y < lastY - 4) head.classList.remove('hide');
+      lastY = y;
+    };
+    document.addEventListener('scroll', onScroll, { passive: true });
+    onScroll();
+  </script>
+</body>
+</html>

@@ -1,0 +1,47 @@
+---
+const params = [
+  'Viscosity',
+  'Open time',
+  'Setting / curing time',
+  'Bond strength',
+  'Application method',
+  'Substrate compatibility',
+  'Production process',
+  'Drying characteristics',
+  'Other application-specific requirements',
+];
+---
+<section class="py-24 lg:py-32">
+  <div class="max-w-[1240px] mx-auto px-5 sm:px-8 grid lg:grid-cols-12 gap-14 items-start">
+    <div class="lg:col-span-5 rv">
+      <p class="kicker-rule text-red mb-5">Customised formulations</p>
+      <h2 class="split leading-[1.08] font-light" style="font-size:clamp(2rem,3.6vw,3rem)">
+        Your Application. Your Requirements. Our Formulation.
+      </h2>
+      <p class="mt-5 text-ink/60 text-lg font-light leading-relaxed">
+        Every manufacturing process is different. Material combinations, application methods,
+        production speeds, curing conditions and environmental requirements can vary from one
+        manufacturer to another. We don't believe in a one-formula-fits-all approach — our
+        objective is to develop an adhesive solution that fits your application and manufacturing
+        process.
+      </p>
+      <a href="/contact" class="btn btn-red mt-8 inline-flex items-center gap-2 text-white
+                                px-8 py-4 rounded-md font-medium">
+        Talk to our technical team
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+             stroke-width="2.5" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+      </a>
+    </div>
+
+    <div class="lg:col-span-7 rv">
+      <p class="font-mono text-xs text-red mb-4">WE CAN WORK WITH YOU ON</p>
+      <ul class="grid sm:grid-cols-2 gap-3">
+        {params.map((p) => (
+          <li class="flex items-center gap-3 bg-bone border border-line rounded-lg px-5 py-4 text-ink/80">
+            <span class="text-red">▹</span>{p}
+          </li>
+        ))}
+      </ul>
+    </div>
+  </div>
+</section>

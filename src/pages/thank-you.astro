@@ -1,0 +1,23 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import Footer from '@/components/layout/Footer.astro';
+import EnquiryForm from '@/components/forms/EnquiryForm.astro';
+---
+<BaseLayout title="Thank you" description="Your enquiry has been received." noindex>
+  <section class="bg-ink text-white min-h-[60vh] flex items-center">
+    <div class="max-w-[1240px] mx-auto px-5 sm:px-8">
+      <p class="kicker-rule text-red-2 mb-5">Enquiry received</p>
+      <h1 class="leading-[1.05] font-light" style="font-size:clamp(2rem,4vw,3rem)">
+        Thank you — we'll be in touch.
+      </h1>
+      <p class="mt-5 text-white/65 max-w-xl font-light">
+        Our technical team typically responds within one working day with a recommended
+        grade, the data sheet, and a sample despatch date.
+      </p>
+      <a href="/" class="btn btn-red mt-9 inline-flex items-center gap-2 text-white px-8 py-4 rounded-md font-medium">
+        Back to home
+      </a>
+    </div>
+  </section>
+  <Footer slot="footer"><EnquiryForm slot="form" /></Footer>
+</BaseLayout>

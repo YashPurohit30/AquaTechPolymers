@@ -1,0 +1,50 @@
+---
+import { NAP, SITE } from '@/consts';
+import Icon from '@/components/ui/Icon.astro';
+const year = new Date().getFullYear();
+---
+<footer id="contact" class="glow-zone bg-ink text-white relative overflow-hidden">
+  <div class="cursor-glow"></div>
+  <div class="max-w-[1240px] mx-auto px-5 sm:px-8 py-24 grid lg:grid-cols-12 gap-14 relative">
+    <div class="lg:col-span-5">
+      <p class="kicker-rule text-red-2 mb-5">Get in touch</p>
+      <h2 class="split leading-[1.08] font-light" style="font-size:clamp(2rem,3.2vw,2.8rem)">
+        Let's match a compound to your line.
+      </h2>
+      <p class="mt-6 text-white/60 max-w-md leading-relaxed font-light">
+        Our technical team responds with a recommended grade, the data sheet, and a
+        sample despatch date — usually within a working day.
+      </p>
+      <address class="mt-10 space-y-4 text-sm not-italic">
+        <p class="flex items-center gap-3">
+          <span class="w-9 h-9 rounded-lg bg-white/5 flex items-center justify-center text-red-2">✉</span>
+          <a href={`mailto:${NAP.email}`} class="hover:text-red-2 transition">{NAP.email}</a>
+        </p>
+        <p class="flex items-center gap-3">
+          <span class="w-9 h-9 rounded-lg bg-white/5 flex items-center justify-center text-red-2">☏</span>
+          <a href={`tel:${NAP.phone}`} class="hover:text-red-2 transition">{NAP.phone}</a>
+        </p>
+        <p class="flex items-center gap-3">
+          <span class="w-9 h-9 rounded-lg bg-white/5 flex items-center justify-center text-red-2">⌾</span>
+          <span>{NAP.street}, {NAP.city}, {NAP.region}</span>
+        </p>
+      </address>
+    </div>
+
+    <div class="lg:col-span-7">
+      <slot name="form" />
+    </div>
+  </div>
+
+  <div class="border-t border-white/10">
+    <div class="max-w-[1240px] mx-auto px-5 sm:px-8 py-7 flex flex-col sm:flex-row
+                items-center justify-between gap-4 text-xs text-steel">
+      <span class="font-mono">© {year} {SITE.name}. All rights reserved.</span>
+      <div class="flex items-center gap-7">
+        <a href="/privacy" class="hover:text-white transition">Privacy</a>
+        <a href="/terms" class="hover:text-white transition">Terms</a>
+        <a href="/products" class="hover:text-white transition">Data sheets</a>
+      </div>
+    </div>
+  </div>
+</footer>

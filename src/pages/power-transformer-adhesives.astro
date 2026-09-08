@@ -1,0 +1,240 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import Footer from '@/components/layout/Footer.astro';
+import EnquiryForm from '@/components/forms/EnquiryForm.astro';
+import Icon from '@/components/ui/Icon.astro';
+import { breadcrumbSchema } from '@/lib/schema';
+
+const schema = [breadcrumbSchema([
+  { name: 'Home', url: '/' },
+  { name: 'Power Transformer Adhesives', url: '/power-transformer-adhesives' },
+])];
+
+const proposition = [
+  { title: 'High Bond Strength', },
+  { title: 'Electrical Performance' },
+  { title: 'Reliable & Consistent Quality' },
+  { title: 'Application-Specific Formulations' },
+  { title: 'Competitive Pricing' },
+  { title: 'Dependable Supply' },
+];
+
+const identify = [
+  'Existing bonding problems',
+  'Required bond strength',
+  'Electrical testing requirements',
+  'Application and curing conditions',
+  'Production-process challenges',
+  'Material compatibility',
+  'Cost and consumption considerations',
+];
+
+const competes = [
+  { title: 'Technical Performance', body: 'Designed to meet demanding requirements for bond strength and electrical performance.' },
+  { title: 'Commercial Advantage', body: 'A competitive domestic solution designed to provide better cost efficiency compared with imported alternatives.' },
+  { title: 'Reliability', body: 'Consistent product performance and dependable supply for continuous manufacturing requirements.' },
+  { title: 'Customisation', body: 'Formulations can be adapted to meet specific customer requirements and application conditions.' },
+];
+---
+<BaseLayout
+  title="High-Strength Adhesives for Power Transformers | ATP Series | Aqua Tech"
+  description="ATP-3900B and ATP-120 high-strength adhesives for 8-10 feet power transformer insulation cylinders. A cost-effective Indian alternative to imported German adhesives."
+  {schema}
+>
+  <section class="bg-ink text-white pt-16 pb-20">
+    <div class="max-w-[1240px] mx-auto px-5 sm:px-8">
+      <nav aria-label="Breadcrumb" class="font-mono text-xs text-steel mb-8">
+        <a href="/" class="hover:text-white">Home</a><span class="mx-2">/</span>
+        <a href="/products" class="hover:text-white">Products</a>
+      </nav>
+      <p class="kicker-rule text-red-2 mb-5">High-strength adhesive for power transformers</p>
+      <h1 class="leading-[1.05] font-light max-w-3xl" style="font-size:clamp(2.2rem,4.4vw,3.4rem)">
+        High-performance bonding for 8–10 feet long insulation cylinders
+      </h1>
+      <p class="mt-6 text-white/70 text-lg max-w-2xl leading-relaxed font-light">
+        Aqua Tech Polymers manufactures high-strength adhesives specially designed for power
+        transformer applications, with proven suitability for bonding and manufacturing large
+        cylinders ranging from 8 feet to 10 feet in length. Developed specifically for demanding
+        transformer insulation applications, our adhesive solutions are engineered to deliver the
+        bond strength, electrical performance, reliability and consistency required by power
+        transformer manufacturers.
+      </p>
+      <a href="/contact" class="btn btn-red mt-8 inline-flex items-center gap-2 text-white
+                                px-8 py-4 rounded-md font-medium">
+        Talk to Our Technical Team
+        <Icon name="arrow" />
+      </a>
+    </div>
+  </section>
+
+  <!-- An Indian Alternative to Imported Adhesives -->
+  <section class="py-20 lg:py-28">
+    <div class="max-w-[1240px] mx-auto px-5 sm:px-8 grid lg:grid-cols-12 gap-14 items-start">
+      <div class="lg:col-span-5 rv">
+        <p class="kicker-rule text-red mb-5">An Indian alternative</p>
+        <h2 class="split leading-[1.08] font-light" style="font-size:clamp(1.9rem,3.2vw,2.6rem)">
+          An Indian alternative to imported adhesives
+        </h2>
+        <p class="mt-5 text-ink/65 leading-relaxed">
+          Aqua Tech Polymers is supplying adhesive solutions to leading power transformer
+          manufacturers in India, with customers entering into annual supply contracts for their
+          regular requirements — positioned as a cost-effective Indian alternative to imported
+          German adhesive solutions.
+        </p>
+        <p class="mt-5 text-ink/65 leading-relaxed">
+          Our objective is not simply to replace an imported product. We aim to provide a solution
+          that can match the customer's technical requirements while delivering significant
+          commercial value.
+        </p>
+      </div>
+      <div class="lg:col-span-7 rv">
+        <div class="grid sm:grid-cols-2 gap-4">
+          {proposition.map((p) => (
+            <div class="bg-bone border border-line rounded-lg px-5 py-4 flex items-center gap-3">
+              <span class="text-red">▹</span>
+              <span class="text-ink/80 text-sm font-medium">{p.title}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Designed for Critical Transformer Applications -->
+  <section class="py-20 lg:py-28 bg-bone border-y border-line">
+    <div class="max-w-[1240px] mx-auto px-5 sm:px-8 max-w-3xl rv">
+      <p class="kicker-rule text-red mb-5">Designed for critical applications</p>
+      <h2 class="split leading-[1.08] font-light" style="font-size:clamp(1.9rem,3.2vw,2.6rem)">
+        Designed for critical transformer applications
+      </h2>
+      <p class="mt-5 text-ink/65 leading-relaxed">
+        Bonding large insulation cylinders requires an adhesive capable of maintaining reliable
+        adhesion across the entire length of the component. Our high-strength power transformer
+        adhesives are designed for applications involving 8–10 feet long cylinders, where
+        consistent bonding and dependable performance are critical to the manufacturing process.
+      </p>
+      <p class="mt-5 text-ink/65 leading-relaxed">
+        We work closely with transformer manufacturers to understand their materials, production
+        process, application conditions and testing requirements, allowing us to recommend or
+        develop the appropriate adhesive formulation.
+      </p>
+    </div>
+  </section>
+
+  <!-- Your Requirement. Our Solution. -->
+  <section class="py-20 lg:py-28">
+    <div class="max-w-[1240px] mx-auto px-5 sm:px-8 grid lg:grid-cols-12 gap-14 items-start">
+      <div class="lg:col-span-5 rv">
+        <p class="kicker-rule text-red mb-5">Your requirement. Our solution.</p>
+        <h2 class="split leading-[1.08] font-light" style="font-size:clamp(1.9rem,3.2vw,2.6rem)">
+          We solve adhesive problems — not just supply adhesives
+        </h2>
+        <p class="mt-5 text-ink/65 leading-relaxed">
+          Every transformer manufacturer may have different requirements. Instead of offering a
+          one-size-fits-all product, Aqua Tech Polymers takes an application-driven approach —
+          identifying the real requirement first, then developing a customised and price-effective
+          adhesive solution around it.
+        </p>
+      </div>
+      <div class="lg:col-span-7 rv">
+        <p class="font-mono text-xs text-red mb-4">WE WORK WITH CUSTOMERS TO IDENTIFY</p>
+        <ul class="grid sm:grid-cols-2 gap-3">
+          {identify.map((i) => (
+            <li class="flex items-center gap-3 bg-bone border border-line rounded-lg px-5 py-4 text-ink/80 text-sm">
+              <span class="text-red">▹</span>{i}
+            </li>
+          ))}
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- Performance That Competes -->
+  <section class="glow-zone grain py-20 lg:py-28 bg-ink text-white relative overflow-hidden">
+    <div class="cursor-glow"></div>
+    <div class="relative max-w-[1240px] mx-auto px-5 sm:px-8">
+      <div class="max-w-2xl rv">
+        <p class="kicker-rule text-red-2 mb-5">On the parameters that matter</p>
+        <h2 class="split leading-[1.08] font-light" style="font-size:clamp(1.9rem,3.2vw,2.6rem)">
+          Performance that competes with imported solutions
+        </h2>
+        <p class="mt-5 text-white/55 font-light">
+          Our focus is to deliver an adhesive solution that can compete with established German
+          and other imported adhesive products on the parameters that matter most to transformer
+          manufacturers.
+        </p>
+      </div>
+      <div class="mt-14 grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        {competes.map((c) => (
+          <div class="border border-white/12 rounded-xl px-6 py-6 rv">
+            <h3 class="text-lg font-medium">{c.title}</h3>
+            <p class="text-white/60 text-sm leading-relaxed mt-3">{c.body}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- From Imported to Indian-Made -->
+  <section class="py-20 lg:py-28">
+    <div class="max-w-[1240px] mx-auto px-5 sm:px-8 max-w-3xl rv">
+      <p class="kicker-rule text-red mb-5">From imported to Indian-made</p>
+      <h2 class="split leading-[1.08] font-light" style="font-size:clamp(1.9rem,3.2vw,2.6rem)">
+        Why continue paying a premium for imported adhesives?
+      </h2>
+      <p class="mt-5 text-ink/65 leading-relaxed">
+        Aqua Tech Polymers is building high-performance adhesive solutions for the Indian power
+        transformer industry, giving manufacturers the opportunity to replace imported adhesive
+        products with a locally manufactured, technically competitive and cost-effective
+        alternative.
+      </p>
+      <p class="mt-6 text-xl font-light leading-relaxed">
+        Comparable technical performance. Competitive pricing.
+        <span class="text-red">Reliable supply. Indian manufacturing.</span>
+      </p>
+    </div>
+  </section>
+
+  <!-- Long-Term Supply Partnerships -->
+  <section class="py-20 lg:py-28 bg-bone border-y border-line">
+    <div class="max-w-[1240px] mx-auto px-5 sm:px-8 max-w-3xl rv">
+      <p class="kicker-rule text-red mb-5">Long-term supply partnerships</p>
+      <h2 class="split leading-[1.08] font-light" style="font-size:clamp(1.9rem,3.2vw,2.6rem)">
+        Beyond individual product supplies
+      </h2>
+      <p class="mt-5 text-ink/65 leading-relaxed">
+        We are serving leading power transformer manufacturers in India and working under yearly
+        supply contracts — reflecting the confidence customers place in our products, consistency
+        and supply capability. We believe in building long-term technical and commercial
+        partnerships, working alongside our customers as their adhesive requirements evolve.
+      </p>
+    </div>
+  </section>
+
+  <!-- Looking for an Alternative — CTA -->
+  <section class="relative overflow-hidden" style="background:linear-gradient(120deg,#D51E28,#8E0810)">
+    <div class="absolute inset-0"
+         style="background:radial-gradient(120% 140% at 80% -30%, rgba(255,255,255,.2), transparent 60%)"></div>
+    <div class="relative max-w-[1240px] mx-auto px-5 sm:px-8 py-20 rv">
+      <div class="max-w-2xl text-white">
+        <h2 class="leading-[1.08] font-light" style="font-size:clamp(1.9rem,3vw,2.7rem)">
+          Looking for an alternative to your imported adhesive?
+        </h2>
+        <p class="mt-4 text-white/85 text-lg font-light leading-relaxed">
+          If you are currently using an imported German or other foreign adhesive for power
+          transformer insulation applications, we can evaluate your existing requirement and work
+          towards developing a suitable Indian alternative. Share your current adhesive,
+          application, material, testing requirements and desired performance, and our technical
+          team will work with you to develop a customised, reliable and cost-effective solution.
+        </p>
+        <a href="/contact" class="btn mt-8 inline-flex items-center gap-2 bg-white text-red px-8 py-4
+                                  rounded-md font-medium hover:bg-ink hover:text-white whitespace-nowrap">
+          Talk to Our Technical Team
+          <Icon name="arrow" />
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <Footer slot="footer"><EnquiryForm slot="form" /></Footer>
+</BaseLayout>

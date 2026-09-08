@@ -1,0 +1,19 @@
+---
+// Native <details> — no JS, content always present in the DOM for crawlers.
+interface Props { faqs: { q: string; a: string }[]; dark?: boolean }
+const { faqs, dark = false } = Astro.props;
+const border = dark ? 'border-white/12' : 'border-line';
+const answer = dark ? 'text-white/60' : 'text-ink/65';
+const icon = dark ? 'text-white/50' : 'text-steel';
+---
+<div class="space-y-3">
+  {faqs.map((f) => (
+    <details class={`acc border ${border} rounded-xl px-6 py-5 rv`}>
+      <summary class="flex items-center justify-between gap-4">
+        <h3 class="text-lg font-medium">{f.q}</h3>
+        <span class={`acc-ico text-2xl leading-none ${icon}`}>+</span>
+      </summary>
+      <p class={`${answer} text-sm leading-relaxed pt-4`}>{f.a}</p>
+    </details>
+  ))}
+</div>

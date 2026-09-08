@@ -1,0 +1,129 @@
+---
+import Icon from '@/components/ui/Icon.astro';
+
+export interface Slide {
+  img: string;
+  kicker: string;
+  headline: string;
+  accent: string;
+  body: string;
+  ctaLabel: string;
+  ctaHref: string;
+}
+interface Props { slides: Slide[] }
+const { slides } = Astro.props;
+---
+<section class="grain relative bg-ink text-white overflow-hidden">
+  <div class="slider relative" id="slider">
+    <div class="slides">
+      {slides.map((s, i) => (
+        <div class={`slide${i === 0 ? ' is-active' : ''}`} style={`--img:url('${s.img}')`}>
+          <div class="slide-media"></div>
+          <div class="slide-inner">
+            <div class="max-w-[1240px] mx-auto px-5 sm:px-8 w-full">
+              <div class="max-w-2xl">
+                <p class="kicker-rule text-red-2 mb-6 s-a">{s.kicker}</p>
+                {/* h1 only on the first slide — one h1 per page */}
+                {i === 0 ? (
+                  <h1 class="leading-[1.03] font-light s-a" style="font-size:clamp(2.4rem,5.4vw,4.2rem)">
+                    {s.headline} <span class="text-red-2">{s.accent}</span>
+                  </h1>
+                ) : (
+                  <p class="leading-[1.03] font-light s-a" style="font-size:clamp(2.4rem,5.4vw,4.2rem)">
+                    {s.headline} <span class="text-red-2">{s.accent}</span>
+                  </p>
+                )}
+                <p class="mt-6 text-white/75 text-lg max-w-xl leading-relaxed font-light s-a">
+                  {s.body}
+                </p>
+                <div class="mt-9 flex flex-col sm:flex-row gap-3.5 s-a">
+                  <a href={s.ctaHref}
+                     class="btn btn-red inline-flex items-center justify-center gap-2
+                            text-white px-8 py-4 rounded-md font-medium">
+                    {s.ctaLabel}
+                    <Icon name="arrow" />
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      ))}
+    </div>
+
+    <button class="nav-arrow left-4 sm:left-6" id="prev" aria-label="Previous slide">
+      <Icon name="chevL" size={20} />
+    </button>
+    <button class="nav-arrow right-4 sm:right-6" id="next" aria-label="Next slide">
+      <Icon name="chevR" size={20} />
+    </button>
+
+    <div class="absolute bottom-7 left-0 right-0 z-20">
+      <div class="max-w-[1240px] mx-auto px-5 sm:px-8 flex items-center gap-3" id="dots"></div>
+    </div>
+  </div>
+
+  <slot name="stats" />
+</section>
+
+<script>
+  const slider = document.getElementById('slider');
+  if (slider) {
+    const slides = [...slider.querySelectorAll<HTMLElement>('.slide')];
+    const dotsWrap = document.getElementById('dots')!;
+    const REDUCE = window.matchMedia('(prefers-reduced-motion:reduce)').matches;
+    const DUR = 5500;
+    let idx = 0;
+    let timer: ReturnType<typeof setInterval> | undefined;
+
+    slides.forEach((_, i) => {
+      const d = document.createElement('button');
+      d.className = 'dot';
+      d.setAttribute('aria-label', `Go to slide ${i + 1}`);
+      d.innerHTML = '<i></i>';
+      d.addEventListener('click', () => go(i));
+      dotsWrap.appendChild(d);
+    });
+    const dots = [...dotsWrap.querySelectorAll<HTMLElement>('.dot')];
+
+    function paint() {
+      slides.forEach((s, i) => s.classList.toggle('is-active', i === idx));
+      dots.forEach((d, i) => {
+        const bar = d.querySelector<HTMLElement>('i')!;
+        bar.style.transition = 'none';
+        bar.style.right = i < idx ? '0%' : '100%';
+        if (i === idx) {
+          if (REDUCE) { bar.style.right = '0%'; return; }
+          void bar.offsetWidth;                       // force reflow
+          bar.style.transition = `right ${DUR}ms linear`;
+          bar.style.right = '0%';
+        }
+      });
+    }
+    function go(n: number) { idx = (n + slides.length) % slides.length; paint(); restart(); }
+    function restart() {
+      clearInterval(timer);
+      if (!REDUCE) timer = setInterval(() => go(idx + 1), DUR);
+    }
+
+    document.getElementById('next')?.addEventListener('click', () => go(idx + 1));
+    document.getElementById('prev')?.addEventListener('click', () => go(idx - 1));
+    slider.addEventListener('mouseenter', () => clearInterval(timer));
+    slider.addEventListener('mouseleave', restart);
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowRight') go(idx + 1);
+      if (e.key === 'ArrowLeft') go(idx - 1);
+    });
+
+    let x0: number | null = null;
+    slider.addEventListener('touchstart', (e) => { x0 = e.touches[0].clientX; }, { passive: true });
+    slider.addEventListener('touchend', (e) => {
+      if (x0 === null) return;
+      const dx = e.changedTouches[0].clientX - x0;
+      if (Math.abs(dx) > 50) go(dx < 0 ? idx + 1 : idx - 1);
+      x0 = null;
+    }, { passive: true });
+
+    paint(); restart();
+  }
+</script>

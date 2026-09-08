@@ -1,0 +1,94 @@
+---
+import { getCollection } from 'astro:content';
+import { getImage } from 'astro:assets';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import Footer from '@/components/layout/Footer.astro';
+import EnquiryForm from '@/components/forms/EnquiryForm.astro';
+import CTABand from '@/components/sections/CTABand.astro';
+import { breadcrumbSchema } from '@/lib/schema';
+import distributionSrc from '@/assets/images/hero-distribution-transformer.jpg';
+import powerSrc from '@/assets/images/hero-power-transformer-substation.jpg';
+import pressBoardSrc from '@/assets/images/press-board.jpg';
+import laminatedBoardSrc from '@/assets/images/laminated-board.jpg';
+import kraftPaperSrc from '@/assets/images/kraft-paper.jpg';
+import spacersSrc from '@/assets/images/spacers.png';
+import crepeTubeSrc from '@/assets/images/crepe-paper-tube-core.jpg';
+
+const apps = (await getCollection('applications')).sort((a, b) => a.data.order - b.data.order);
+
+// Card header photos, keyed by application slug.
+const cardImg: Record<string, string> = Object.fromEntries(await Promise.all(
+  [
+    ['distribution-transformers', distributionSrc],
+    ['power-transformers', powerSrc],
+  ].map(async ([slug, src]) => [slug, (await getImage({ src, width: 640, height: 360, format: 'webp' })).src])
+));
+
+// Material/component categories with client photography.
+const withPhoto = await Promise.all(
+  [
+    { label: 'Press Board', src: pressBoardSrc },
+    { label: 'Laminated Board', src: laminatedBoardSrc },
+    { label: 'Insulation Kraft Paper', src: kraftPaperSrc },
+    { label: 'Spacers', src: spacersSrc },
+    { label: 'Crepe Paper Tubes', src: crepeTubeSrc },
+  ].map(async (i) => ({ label: i.label, img: await getImage({ src: i.src, width: 480, format: 'webp' }) }))
+);
+
+// Everything else in the client's supplied-for list, no photo yet.
+const alsoSupplied = ['Pre-Compressed Board', 'Press Board Components', 'Dovetail Strips', 'Electrical Insulation Components'];
+---
+<BaseLayout
+  title="Applications — Equipment We Supply Into"
+  description="Adhesives and materials for distribution transformers, power transformers, press board, crepe paper tubes and other electrical insulation components."
+  schema={[breadcrumbSchema([{ name: 'Home', url: '/' }, { name: 'Applications', url: '/applications' }])]}
+>
+  <section class="bg-ink text-white pt-16 pb-20">
+    <div class="max-w-[1240px] mx-auto px-5 sm:px-8">
+      <p class="kicker-rule text-red-2 mb-5">Where it goes</p>
+      <h1 class="leading-[1.05] font-light max-w-3xl" style="font-size:clamp(2.2rem,4.4vw,3.4rem)">
+        Equipment our compounds are built into
+      </h1>
+    </div>
+  </section>
+  <section class="py-20 lg:py-28">
+    <div class="max-w-[1240px] mx-auto px-5 sm:px-8 grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+      {apps.map((a) => (
+        <a href={`/applications/${a.slug}`} class="lift bg-white border border-line rounded-2xl overflow-hidden block rv">
+          {cardImg[a.slug] && (
+            <div class="photo" style={`--img:url('${cardImg[a.slug]}')`}></div>
+          )}
+          <div class="p-8">
+            <h2 class="text-xl font-medium">{a.data.title}</h2>
+            <p class="text-sm text-ink/60 mt-3 leading-relaxed">{a.data.summary}</p>
+          </div>
+        </a>
+      ))}
+    </div>
+  </section>
+
+  <section class="py-20 bg-bone border-y border-line">
+    <div class="max-w-[1240px] mx-auto px-5 sm:px-8">
+      <p class="font-mono text-xs text-red mb-4">ALSO SUPPLIED FOR</p>
+      <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
+        {withPhoto.map((i) => (
+          <div class="rounded-lg overflow-hidden border border-line bg-white rv">
+            <img src={i.img.src} width={i.img.attributes.width} height={i.img.attributes.height}
+                 alt={i.label} loading="lazy" class="w-full h-24 object-cover" />
+            <p class="text-xs text-ink/70 px-2.5 py-2 leading-snug">{i.label}</p>
+          </div>
+        ))}
+      </div>
+      <div class="flex flex-wrap gap-3 mt-4">
+        {alsoSupplied.map((item) => (
+          <span class="bg-white border border-line rounded-full px-5 py-2.5 text-sm text-ink/75">
+            {item}
+          </span>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <CTABand />
+  <Footer slot="footer"><EnquiryForm slot="form" /></Footer>
+</BaseLayout>

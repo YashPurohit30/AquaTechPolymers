@@ -1,0 +1,82 @@
+---
+import { getCollection } from 'astro:content';
+import SpecTable from '@/components/ui/SpecTable.astro';
+import Icon from '@/components/ui/Icon.astro';
+
+// GEO-CRITICAL: every panel is rendered into the HTML at build time and
+// toggled with CSS. Never mount panels on click — that hides four fifths
+// of the product content from AI crawlers.
+const products = (await getCollection('products')).sort(
+  (a, b) => a.data.order - b.data.order
+);
+---
+<section id="products" class="py-24 lg:py-32 bg-bone border-y border-line">
+  <div class="max-w-[1240px] mx-auto px-5 sm:px-8">
+    <div class="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-5 rv">
+      <div class="max-w-xl">
+        <p class="kicker-rule text-red mb-5">The range</p>
+        <h2 class="split leading-[1.08] font-light" style="font-size:clamp(2rem,3.6vw,3rem)">
+          Pick a category to see what's inside it
+        </h2>
+      </div>
+      <a href="/products" class="font-mono text-sm text-red inline-flex items-center gap-2
+                                 hover:gap-3 transition-all whitespace-nowrap">
+        View all products
+        <Icon name="arrow" />
+      </a>
+    </div>
+
+    <div class="mt-12 border-b border-line overflow-x-auto rv">
+      <div class="flex gap-8 min-w-max text-[15px] text-ink/60 pb-3" role="tablist">
+        {products.map((p, i) => (
+          <button class={`tab pb-3${i === 0 ? ' active' : ''}`} data-t={i}
+                  role="tab" aria-selected={i === 0} aria-controls={`panel-${i}`}>
+            {p.data.title.split(' for ')[0]}
+          </button>
+        ))}
+      </div>
+    </div>
+
+    <div class="mt-12">
+      {products.map((p, i) => (
+        <div class={`panel${i === 0 ? ' show' : ''} lg:grid-cols-12 gap-12 items-start`}
+             id={`panel-${i}`} role="tabpanel">
+          <div class="lg:col-span-6">
+            <p class="font-mono text-xs text-red mb-3">SERIES {p.data.series}</p>
+            <h3 class="text-3xl font-light leading-tight">{p.data.title}</h3>
+            <p class="mt-5 text-ink/65 leading-relaxed">{p.data.summary}</p>
+            <ul class="mt-7 space-y-3 text-ink/75">
+              {p.data.features.map((f) => (
+                <li class="flex gap-3"><span class="text-red">▹</span>{f}</li>
+              ))}
+            </ul>
+            <a href={`/products/${p.slug}`}
+               class="mt-8 inline-flex items-center gap-2 text-red font-medium hover:gap-3 transition-all">
+              Full specification
+              <Icon name="arrow" />
+            </a>
+          </div>
+          <div class="lg:col-span-6 mt-10 lg:mt-0">
+            <SpecTable specs={p.data.specs} grade={p.data.series}
+                       caption={`Typical properties for ${p.data.title}`} />
+          </div>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>
+
+<script>
+  const tabs = [...document.querySelectorAll<HTMLElement>('.tab')];
+  const panels = [...document.querySelectorAll<HTMLElement>('.panel')];
+  tabs.forEach((t) => {
+    t.addEventListener('click', () => {
+      const i = Number(t.dataset.t);
+      tabs.forEach((x) => { x.classList.remove('active'); x.setAttribute('aria-selected', 'false'); });
+      panels.forEach((p) => p.classList.remove('show'));
+      t.classList.add('active');
+      t.setAttribute('aria-selected', 'true');
+      panels[i]?.classList.add('show');
+    });
+  });
+</script>

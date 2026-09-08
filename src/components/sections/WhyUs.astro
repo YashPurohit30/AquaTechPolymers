@@ -1,0 +1,48 @@
+---
+const cards = [
+  {
+    n: '01',
+    title: 'Industry-Focused Solutions',
+    body: 'Specialised adhesive solutions designed around the requirements of the transformer and electrical insulation industry.',
+  },
+  {
+    n: '02',
+    title: 'Application-Specific Formulations',
+    body: 'Customised formulations developed according to your materials, process and performance requirements.',
+  },
+  {
+    n: '03',
+    title: 'Consistent Quality',
+    body: 'A focus on consistency and dependable product performance for industrial applications.',
+  },
+  {
+    n: '04',
+    title: 'Technical Support',
+    body: "We work with customers to understand their application and help identify the appropriate adhesive solution.",
+  },
+  {
+    n: '05',
+    title: 'Flexible & Customised',
+    body: 'From standard products to specialised formulations, we strive to provide solutions tailored to individual manufacturing requirements.',
+  },
+];
+---
+<section class="py-24 lg:py-32 bg-bone border-b border-line">
+  <div class="max-w-[1240px] mx-auto px-5 sm:px-8">
+    <div class="max-w-2xl rv">
+      <p class="kicker-rule text-red mb-5">Why Aqua Tech Polymers</p>
+      <h2 class="split leading-[1.08] font-light" style="font-size:clamp(2rem,3.6vw,3rem)">
+        Five reasons manufacturers work with us
+      </h2>
+    </div>
+    <div class="mt-14 grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+      {cards.map((c) => (
+        <div class="lift bg-white border border-line rounded-2xl p-8 rv">
+          <span class="font-mono text-red text-sm">{c.n}</span>
+          <h3 class="text-xl font-medium mt-4">{c.title}</h3>
+          <p class="text-ink/60 mt-2.5 leading-relaxed text-[15px]">{c.body}</p>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>

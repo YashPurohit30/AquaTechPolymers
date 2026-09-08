@@ -1,0 +1,15 @@
+User-agent: *
+Allow: /
+
+# AI crawlers — explicitly allowed. Some hosts block these by default,
+# so verify this file on the live domain after deploying.
+User-agent: GPTBot
+Allow: /
+User-agent: ClaudeBot
+Allow: /
+User-agent: PerplexityBot
+Allow: /
+User-agent: Google-Extended
+Allow: /
+
+Sitemap: https://aquatechpolymers.com/sitemap-index.xml

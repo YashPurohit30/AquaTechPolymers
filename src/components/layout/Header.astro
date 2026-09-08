@@ -1,0 +1,64 @@
+---
+import { NAV } from '@/consts';
+import Logo from './Logo.astro';
+import Icon from '@/components/ui/Icon.astro';
+---
+<header id="top" data-head
+        class="sticky top-0 z-50 bg-white/95 backdrop-blur border-b border-line">
+  <div class="max-w-[1240px] mx-auto px-5 sm:px-8 h-[74px] flex items-center justify-between">
+    <a href="/" class="flex items-center gap-3">
+      <span class="w-10 h-10 rounded-lg bg-ink flex items-center justify-center">
+        <Logo class="w-8 h-8" dark />
+      </span>
+      <span class="leading-none">
+        <span class="block text-[17px] font-semibold tracking-tight">
+          Aqua Tech <span class="text-red">Polymers</span>
+        </span>
+        <span class="block kicker text-steel text-[9px] mt-1.5">
+          Bonding Adhesives · Crepe Paper Tubes · Cotton Tape
+        </span>
+      </span>
+    </a>
+
+    <nav class="hidden lg:flex items-center gap-9 text-[15px] text-ink/80" aria-label="Main">
+      {NAV.map((n) => <a href={n.href} class="nav-a whitespace-nowrap">{n.label}</a>)}
+    </nav>
+
+    <a href="/contact"
+       class="hidden lg:inline-flex btn btn-red items-center gap-2 text-white px-6 py-3 rounded-md font-medium text-sm whitespace-nowrap">
+      Request a sample
+      <Icon name="arrow" size={14} />
+    </a>
+
+    <button id="mBtn" class="lg:hidden w-11 h-11 rounded-md border border-line flex items-center justify-center"
+            aria-label="Toggle menu" aria-expanded="false" aria-controls="mMenu">
+      <Icon name="menu" size={22} class="block" />
+      <Icon name="close" size={22} class="hidden" />
+    </button>
+  </div>
+
+  <div id="mMenu" class="lg:hidden hidden border-t border-line bg-white">
+    <nav class="max-w-[1240px] mx-auto px-5 py-3 flex flex-col divide-y divide-line" aria-label="Mobile">
+      {NAV.map((n) => <a href={n.href} class="py-3.5">{n.label}</a>)}
+      <a href="/contact" class="mt-3 mb-2 btn-red text-white text-center py-3.5 rounded-md font-medium">
+        Request a sample
+      </a>
+    </nav>
+  </div>
+</header>
+
+<script>
+  const btn = document.getElementById('mBtn');
+  const menu = document.getElementById('mMenu');
+  if (btn && menu) {
+    const [open, close] = btn.querySelectorAll('svg');
+    const set = (isOpen: boolean) => {
+      menu.classList.toggle('hidden', !isOpen);
+      btn.setAttribute('aria-expanded', String(isOpen));
+      open.classList.toggle('hidden', isOpen);
+      close.classList.toggle('hidden', !isOpen);
+    };
+    btn.addEventListener('click', () => set(menu.classList.contains('hidden')));
+    menu.querySelectorAll('a').forEach((a) => a.addEventListener('click', () => set(false)));
+  }
+</script>

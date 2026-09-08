@@ -1,0 +1,28 @@
+---
+const items = [
+  { n: '01', title: 'Paying a premium for imported adhesive', body: 'Manufacturers relying on imported German adhesives face high costs and supply uncertainty. Our ATP series is engineered to match the technical performance of imported alternatives, manufactured in India at a competitive price.' },
+  { n: '02', title: "One formula doesn't fit every line", body: 'Material combinations, application methods, production speeds and curing conditions vary from one manufacturer to another. We develop customised formulations around your specific requirements, rather than asking you to adapt to ours.' },
+  { n: '03', title: 'Bonding that has to hold across 8–10 ft cylinders', body: 'Bonding large insulation cylinders requires an adhesive capable of maintaining reliable adhesion across the entire length of the component — the ATP series is designed specifically for this.' },
+  { n: '04', title: 'Consistency you can build a schedule around', body: 'We focus on consistency and dependable product performance, backed by technical support that works with you to identify the right formulation for your application.' },
+];
+---
+<section id="solutions" class="py-24 lg:py-32">
+  <div class="max-w-[1240px] mx-auto px-5 sm:px-8">
+    <div class="max-w-2xl rv">
+      <p class="kicker-rule text-red mb-5">What we solve</p>
+      <h2 class="split leading-[1.08] font-light" style="font-size:clamp(2rem,3.6vw,3rem)">
+        Problems that start in the coil shop, end on the field.
+      </h2>
+    </div>
+
+    <div class="mt-16 space-y-px bg-line rounded-2xl overflow-hidden border border-line">
+      {items.map((i) => (
+        <div class="bg-white grid md:grid-cols-12 gap-6 p-8 lg:p-10 rv">
+          <div class="md:col-span-1"><span class="font-mono text-red text-sm">{i.n}</span></div>
+          <div class="md:col-span-4"><h3 class="text-xl font-medium">{i.title}</h3></div>
+          <div class="md:col-span-7"><p class="text-ink/65 leading-relaxed">{i.body}</p></div>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>

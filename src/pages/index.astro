@@ -1,0 +1,115 @@
+---
+import { getCollection } from 'astro:content';
+import { getImage } from 'astro:assets';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import Footer from '@/components/layout/Footer.astro';
+import EnquiryForm from '@/components/forms/EnquiryForm.astro';
+import HeroCarousel, { type Slide } from '@/components/sections/HeroCarousel.astro';
+import StatBar from '@/components/sections/StatBar.astro';
+import Solutions from '@/components/sections/Solutions.astro';
+import ProductExplorer from '@/components/sections/ProductExplorer.astro';
+import ProcessTimeline from '@/components/sections/ProcessTimeline.astro';
+import Applications from '@/components/sections/Applications.astro';
+import WhyUs from '@/components/sections/WhyUs.astro';
+import CustomFormulation from '@/components/sections/CustomFormulation.astro';
+import CTABand from '@/components/sections/CTABand.astro';
+import FAQ from '@/components/ui/FAQ.astro';
+import { faqSchema } from '@/lib/schema';
+import { SITE } from '@/consts';
+
+// Client-supplied photography (see public/images/README). Sharp generates
+// optimised, resized WebP output from src/assets/images at build time —
+// these are NOT served as-is from public/.
+import heroSubstationSrc from '@/assets/images/hero-power-transformer-substation.jpg';
+import heroDistributionSrc from '@/assets/images/hero-distribution-transformer.jpg';
+import heroCrepeWrapSrc from '@/assets/images/hero-crepe-paper-wrap.jpg';
+import heroTransformerSrc from '@/assets/images/hero-transformer.jpg';
+
+const [heroSubstation, heroDistribution, heroCrepeWrap, heroTransformer] = await Promise.all(
+  [heroSubstationSrc, heroDistributionSrc, heroCrepeWrapSrc, heroTransformerSrc].map((src) =>
+    getImage({ src, width: 1900, height: 1100, format: 'webp' }))
+);
+
+// Slide copy: headline/kicker lines are the client's own taglines; body
+// copy is paraphrased from the client's product/company copy, not invented.
+const slides: Slide[] = [
+  {
+    img: heroSubstation.src,
+    kicker: 'Industry-focused adhesive solutions',
+    headline: 'The new benchmark in',
+    accent: 'Transformer Insulation Adhesives.',
+    body: 'Specialised adhesive solutions designed around the requirements of the transformer and electrical insulation industry.',
+    ctaLabel: 'Talk to Our Technical Team',
+    ctaHref: '/contact',
+  },
+  {
+    img: heroDistribution.src,
+    kicker: 'Customised adhesive formulations',
+    headline: 'Creating what the',
+    accent: 'transformer industry needs',
+    body: "Every manufacturing process is different — we offer customised adhesive formulations based on your specific requirements.",
+    ctaLabel: 'See Our Products',
+    ctaHref: '/products',
+  },
+  {
+    img: heroCrepeWrap.src,
+    kicker: 'Bonding adhesives · Crepe paper tube adhesive · Cotton tape',
+    headline: 'Unmatched Bonding —',
+    accent: 'Unmatched Insulation',
+    body: 'From bonding adhesives to cotton tape — solutions for power transformers, distribution transformers, press board, crepe paper tubes and more.',
+    ctaLabel: 'Explore Applications',
+    ctaHref: '/applications',
+  },
+  {
+    img: heroTransformer.src,
+    kicker: 'An Indian alternative to imported adhesives',
+    headline: 'High Strength Bonding —',
+    accent: 'Superior Insulation',
+    body: 'Trusted by leading power transformer manufacturers in India under annual supply contracts — a cost-effective alternative to imported adhesives.',
+    ctaLabel: 'See Power Transformer Adhesives',
+    ctaHref: '/power-transformer-adhesives',
+  },
+];
+
+const faqs = [
+  { q: 'Can I get a sample before committing?', a: 'Yes. We can despatch a trial quantity with the technical data sheet, so you can run the material on your own line under your own conditions before making any commitment.' },
+  { q: 'What if no stock grade fits my process?', a: 'We formulate in-house, so we can adjust viscosity, open time, setting/curing time, bond strength or application method to suit your production process.' },
+  { q: 'Do you supply documentation for audits?', a: 'Technical data sheets are available on request for all our products, and our technical team can work with you on any additional testing or documentation your qualification process requires.' },
+  { q: 'What are the minimum order quantities?', a: 'Minimums vary by product and packing format. Trial quantities are much smaller than production packs — share your expected monthly consumption and we will quote accordingly.' },
+  { q: 'Do you supply outside India?', a: "Get in touch with your location and requirements — our team will confirm feasibility, packing and lead times for your specific case." },
+];
+---
+<BaseLayout
+  title={`${SITE.name} — Bonding Adhesives for Transformer Manufacturing`}
+  description={SITE.description}
+  schema={[faqSchema(faqs)]}
+>
+  <HeroCarousel {slides}>
+    <StatBar slot="stats" />
+  </HeroCarousel>
+
+  <Solutions />
+  <ProductExplorer />
+  <CustomFormulation />
+  <ProcessTimeline />
+  <Applications />
+  <WhyUs />
+
+  <section id="faq" class="py-24 lg:py-32 bg-bone border-y border-line">
+    <div class="max-w-[1240px] mx-auto px-5 sm:px-8 grid lg:grid-cols-12 gap-14">
+      <div class="lg:col-span-4 rv">
+        <p class="kicker-rule text-red mb-5">Common questions</p>
+        <h2 class="split leading-[1.08] font-light" style="font-size:clamp(2rem,3.4vw,2.8rem)">
+          Before you enquire
+        </h2>
+      </div>
+      <div class="lg:col-span-8"><FAQ {faqs} /></div>
+    </div>
+  </section>
+
+  <CTABand />
+
+  <Footer slot="footer">
+    <EnquiryForm slot="form" />
+  </Footer>
+</BaseLayout>

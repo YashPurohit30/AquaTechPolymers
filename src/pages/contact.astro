@@ -1,0 +1,24 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import Footer from '@/components/layout/Footer.astro';
+import EnquiryForm from '@/components/forms/EnquiryForm.astro';
+import { breadcrumbSchema } from '@/lib/schema';
+---
+<BaseLayout
+  title="Contact — Request a Sample"
+  description="Send your thermal class, cure method and volumes. We respond with a recommended grade, data sheet and sample despatch date."
+  schema={[breadcrumbSchema([{ name: 'Home', url: '/' }, { name: 'Contact', url: '/contact' }])]}
+>
+  <section class="bg-ink text-white pt-16">
+    <div class="max-w-[1240px] mx-auto px-5 sm:px-8 border-b border-white/10 pb-14">
+      <h1 class="leading-[1.05] font-light max-w-3xl" style="font-size:clamp(2.2rem,4.4vw,3.4rem)">
+        Request a sample
+      </h1>
+      <p class="mt-6 text-white/70 text-lg max-w-2xl leading-relaxed font-light">
+        Send us your thermal class, cure method and volumes — our technical team responds with a
+        recommended grade, the data sheet, and a sample despatch date.
+      </p>
+    </div>
+  </section>
+  <Footer slot="footer"><EnquiryForm slot="form" /></Footer>
+</BaseLayout>

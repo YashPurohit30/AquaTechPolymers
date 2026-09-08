@@ -1,0 +1,113 @@
+---
+import { getCollection, type CollectionEntry } from 'astro:content';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import Footer from '@/components/layout/Footer.astro';
+import EnquiryForm from '@/components/forms/EnquiryForm.astro';
+import SpecTable from '@/components/ui/SpecTable.astro';
+import FAQ from '@/components/ui/FAQ.astro';
+import CTABand from '@/components/sections/CTABand.astro';
+import Icon from '@/components/ui/Icon.astro';
+import { productSchema, faqSchema, breadcrumbSchema } from '@/lib/schema';
+
+export async function getStaticPaths() {
+  const products = await getCollection('products');
+  return products.map((entry) => ({ params: { slug: entry.slug }, props: { entry } }));
+}
+
+interface Props { entry: CollectionEntry<'products'> }
+const { entry } = Astro.props;
+const { data } = entry;
+const { Content } = await entry.render();
+
+const apps = await getCollection('applications', (a) =>
+  data.applications.includes(a.slug));
+
+const schema = [
+  productSchema({ ...data, slug: entry.slug }),
+  breadcrumbSchema([
+    { name: 'Home', url: '/' },
+    { name: 'Products', url: '/products' },
+    { name: data.title, url: `/products/${entry.slug}` },
+  ]),
+  ...(data.faqs.length ? [faqSchema(data.faqs)] : []),
+];
+---
+<BaseLayout title={data.metaTitle} description={data.metaDescription} {schema}>
+
+  <section class="bg-ink text-white pt-16 pb-20">
+    <div class="max-w-[1240px] mx-auto px-5 sm:px-8">
+      <nav aria-label="Breadcrumb" class="font-mono text-xs text-steel mb-8">
+        <a href="/" class="hover:text-white">Home</a>
+        <span class="mx-2">/</span>
+        <a href="/products" class="hover:text-white">Products</a>
+        <span class="mx-2">/</span>
+        <span class="text-white/70">{data.series}</span>
+      </nav>
+      <p class="kicker-rule text-red-2 mb-5">Series {data.series}</p>
+      <h1 class="leading-[1.05] font-light max-w-3xl" style="font-size:clamp(2.2rem,4.4vw,3.4rem)">
+        {data.title}
+      </h1>
+      {/* Answer-first paragraph — the passage AI engines extract */}
+      <p class="mt-6 text-white/70 text-lg max-w-2xl leading-relaxed font-light">
+        {data.summary}
+      </p>
+    </div>
+  </section>
+
+  <section class="py-20 lg:py-28">
+    <div class="max-w-[1240px] mx-auto px-5 sm:px-8 grid lg:grid-cols-12 gap-14 items-start">
+      <div class="lg:col-span-7 rv">
+        <div class="prose prose-lg max-w-none prose-headings:font-medium prose-headings:text-ink
+                    prose-p:text-ink/70 prose-p:leading-relaxed">
+          <Content />
+        </div>
+        <ul class="mt-10 space-y-3 text-ink/75">
+          {data.features.map((f) => (
+            <li class="flex gap-3"><span class="text-red">▹</span>{f}</li>
+          ))}
+        </ul>
+      </div>
+      <div class="lg:col-span-5 rv">
+        <SpecTable specs={data.specs} grade={data.series}
+                   caption={`Typical properties for ${data.title}`} />
+        <a href="/contact" class="btn btn-red mt-6 w-full inline-flex items-center justify-center
+                                  gap-2 text-white px-8 py-4 rounded-md font-medium">
+          Request a sample of {data.series}
+          <Icon name="arrow" />
+        </a>
+      </div>
+    </div>
+  </section>
+
+  {apps.length > 0 && (
+    <section class="py-20 bg-bone border-y border-line">
+      <div class="max-w-[1240px] mx-auto px-5 sm:px-8">
+        <h2 class="text-2xl font-light mb-8">Where this is used</h2>
+        <div class="grid sm:grid-cols-3 gap-5">
+          {apps.map((a) => (
+            <a href={`/applications/${a.slug}`}
+               class="lift bg-white border border-line rounded-2xl p-7 block">
+              <h3 class="text-lg font-medium">{a.data.title}</h3>
+              <p class="text-sm text-ink/60 mt-2 leading-relaxed">{a.data.summary}</p>
+            </a>
+          ))}
+        </div>
+      </div>
+    </section>
+  )}
+
+  {data.faqs.length > 0 && (
+    <section class="py-20 lg:py-28">
+      <div class="max-w-[1240px] mx-auto px-5 sm:px-8 grid lg:grid-cols-12 gap-14">
+        <div class="lg:col-span-4">
+          <p class="kicker-rule text-red mb-5">Questions</p>
+          <h2 class="text-2xl font-light">About {data.series}</h2>
+        </div>
+        <div class="lg:col-span-8"><FAQ faqs={data.faqs} /></div>
+      </div>
+    </section>
+  )}
+
+  <CTABand />
+  <Footer slot="footer"><EnquiryForm slot="form" /></Footer>
+</BaseLayout>

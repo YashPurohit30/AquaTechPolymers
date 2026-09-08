@@ -1,0 +1,15 @@
+---
+import { STATS } from '@/consts';
+---
+<div class="relative border-t border-white/10 bg-ink-2/60">
+  <div class="max-w-[1240px] mx-auto px-5 sm:px-8 grid grid-cols-2 lg:grid-cols-4 divide-x divide-white/10">
+    {STATS.map((s) => (
+      <div class="py-7 px-2 lg:px-7">
+        <p class="text-3xl sm:text-4xl font-light">
+          <span class="count" data-to={s.value}>0</span><span class="text-red-2">{s.suffix}</span>
+        </p>
+        <p class="font-mono text-[11px] tracking-wider text-steel mt-1.5">{s.label}</p>
+      </div>
+    ))}
+  </div>
+</div>
