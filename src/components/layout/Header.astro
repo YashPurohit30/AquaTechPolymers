@@ -118,17 +118,18 @@ const appMenuItems = await Promise.all(
     <div class="max-w-[1240px] mx-auto px-5 sm:px-8 py-8 grid grid-cols-12 gap-10 items-center">
       <div class="col-span-4 border border-line rounded-2xl overflow-hidden divide-y divide-line" role="tablist">
         {menuItems.map(({ product: p }, i) => (
-          <button class={`nav-tab w-full text-left px-5 py-4 flex items-center justify-between gap-3${i === 0 ? ' active' : ''}`}
-                  data-nt={i} role="tab" aria-selected={i === 0} aria-controls={`nav-panel-${i}`}>
-            <span>
+          <div class={`nav-tab flex items-center justify-between gap-3${i === 0 ? ' active' : ''}`}
+               data-nt={i} role="tab" aria-selected={i === 0} aria-controls={`nav-panel-${i}`}>
+            <button type="button" class="flex-1 min-w-0 text-left pl-5 py-4">
               <span class="block font-mono text-[10px] text-red mb-0.5">SERIES {p.data.series}</span>
               <span class="block font-medium text-sm text-ink">{p.data.title.split(' for ')[0].split(' — ')[0].split(' (')[0]}</span>
-            </span>
-            <span class="nav-tab-arrow shrink-0 w-7 h-7 rounded-full border border-line flex items-center
-                         justify-center text-ink/40">
+            </button>
+            <a href={`/products/${p.slug}`} aria-label={`View full specification: ${p.data.title}`}
+               class="nav-tab-arrow shrink-0 w-7 h-7 mr-5 rounded-full border border-line flex items-center
+                      justify-center text-ink/40">
               <Icon name="arrow" size={12} />
-            </span>
-          </button>
+            </a>
+          </div>
         ))}
       </div>
 
@@ -170,16 +171,19 @@ const appMenuItems = await Promise.all(
     <div class="max-w-[1240px] mx-auto px-5 sm:px-8 py-8 grid grid-cols-12 gap-10 items-center">
       <div class="col-span-4 border border-line rounded-2xl overflow-hidden divide-y divide-line" role="tablist">
         {appMenuItems.map(({ app: a }, i) => (
-          <button class={`nav-tab w-full text-left px-5 py-4 flex items-center justify-between gap-3${i === 0 ? ' active' : ''}`}
-                  data-nt={i} role="tab" aria-selected={i === 0} aria-controls={`app-nav-panel-${i}`}>
-            <span class="block font-medium text-sm text-ink">
-              {a.data.title.replace(/^Compounds for /, '')}
-            </span>
-            <span class="nav-tab-arrow shrink-0 w-7 h-7 rounded-full border border-line flex items-center
-                         justify-center text-ink/40">
+          <div class={`nav-tab flex items-center justify-between gap-3${i === 0 ? ' active' : ''}`}
+               data-nt={i} role="tab" aria-selected={i === 0} aria-controls={`app-nav-panel-${i}`}>
+            <button type="button" class="flex-1 min-w-0 text-left pl-5 py-4">
+              <span class="block font-medium text-sm text-ink">
+                {a.data.title.replace(/^Compounds for /, '')}
+              </span>
+            </button>
+            <a href={`/applications/${a.slug}`} aria-label={`View application: ${a.data.title}`}
+               class="nav-tab-arrow shrink-0 w-7 h-7 mr-5 rounded-full border border-line flex items-center
+                      justify-center text-ink/40">
               <Icon name="arrow" size={12} />
-            </span>
-          </button>
+            </a>
+          </div>
         ))}
       </div>
 
