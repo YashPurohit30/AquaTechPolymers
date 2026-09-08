@@ -91,17 +91,13 @@
     border-color: theme('colors.red');
   }
 
-  /* rolled back to the pill box (client's sketch reference wants this
-     shape, not the flush full-height rectangle) — now with a visible
-     border at all times, not just on hover. */
+  /* no border, no rounding — sharp square edges on the pill box */
   .nav-a {
     @apply relative;
     padding: .5rem .9rem;
-    border-radius: .5rem;
-    border: 1.5px solid theme('colors.line');
-    transition: background-color .25s ease, color .25s ease, border-color .25s ease;
+    transition: background-color .25s ease, color .25s ease;
   }
-  .nav-a:hover { background-color: theme('colors.red'); color: #fff; border-color: theme('colors.red'); }
+  .nav-a:hover { background-color: theme('colors.red'); color: #fff; }
 }
 
 /* ---------------- motion ---------------- */
