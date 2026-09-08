@@ -1,10 +1,31 @@
 ---
+import { getCollection } from 'astro:content';
 import { getImage } from 'astro:assets';
 import { NAV } from '@/consts';
 import Icon from '@/components/ui/Icon.astro';
 import logoSrc from '@/assets/images/logo.png';
+import distributionSrc from '@/assets/images/hero-distribution-transformer.jpg';
+import crepeWrapSrc from '@/assets/images/hero-crepe-paper-wrap.jpg';
+import powerSrc from '@/assets/images/hero-power-transformer-substation.jpg';
+import windingSrc from '@/assets/images/winding-core.jpg';
 
 const logo = await getImage({ src: logoSrc, width: logoSrc.width, format: 'webp' });
+
+// Same product data + contextual photos as the homepage ProductExplorer
+// section — this dropdown is a compact preview of that same content.
+const products = (await getCollection('products')).sort((a, b) => a.data.order - b.data.order);
+const photoByProduct: Record<string, ImageMetadata> = {
+  'pba-series': distributionSrc,
+  'crepe-paper-tube-adhesive': crepeWrapSrc,
+  'atp-power-transformer-series': powerSrc,
+  'cotton-tape': windingSrc,
+};
+const menuItems = await Promise.all(
+  products.map(async (p) => ({
+    product: p,
+    img: await getImage({ src: photoByProduct[p.slug], width: 480, height: 320, format: 'webp' }),
+  }))
+);
 ---
 <header id="top" data-head
         class="sticky top-0 z-50 bg-white/95 backdrop-blur border-b border-line">
@@ -15,7 +36,20 @@ const logo = await getImage({ src: logoSrc, width: logoSrc.width, format: 'webp'
     </a>
 
     <nav class="hidden lg:flex items-center gap-9 text-[15px] text-ink/80" aria-label="Main">
-      {NAV.map((n) => <a href={n.href} class="nav-a whitespace-nowrap">{n.label}</a>)}
+      {NAV.map((n) => n.label === 'Products' ? (
+        <div class="relative">
+          <button id="productsTrigger" class="nav-a flex items-center gap-1.5" aria-expanded="false"
+                  aria-controls="productsMenu">
+            Products
+            <svg id="productsChevron" width="12" height="12" viewBox="0 0 24 24" fill="none"
+                 stroke="currentColor" stroke-width="2.5" class="transition-transform" aria-hidden="true">
+              <path d="M6 9l6 6 6-6"/>
+            </svg>
+          </button>
+        </div>
+      ) : (
+        <a href={n.href} class="nav-a whitespace-nowrap">{n.label}</a>
+      ))}
     </nav>
 
     <a href="/contact"
@@ -29,6 +63,55 @@ const logo = await getImage({ src: logoSrc, width: logoSrc.width, format: 'webp'
       <Icon name="menu" size={22} class="block" />
       <Icon name="close" size={22} class="hidden" />
     </button>
+  </div>
+
+  <!-- Products mega-menu: click "Products" above to open. Same product data as
+       the homepage explorer, rendered here too (not hidden behind JS-only
+       mount) so it isn't invisible to crawlers. -->
+  <div id="productsMenu" class="hidden absolute left-0 right-0 top-full bg-white border-b border-line shadow-2xl">
+    <div class="max-w-[1240px] mx-auto px-5 sm:px-8 py-8 grid grid-cols-12 gap-8">
+      <div class="col-span-4 border border-line rounded-2xl overflow-hidden divide-y divide-line" role="tablist">
+        {menuItems.map(({ product: p }, i) => (
+          <button class={`nav-tab w-full text-left px-5 py-4 flex items-center justify-between gap-3${i === 0 ? ' active' : ''}`}
+                  data-nt={i} role="tab" aria-selected={i === 0} aria-controls={`nav-panel-${i}`}>
+            <span>
+              <span class="block font-mono text-[10px] text-red mb-0.5">SERIES {p.data.series}</span>
+              <span class="block font-medium text-sm text-ink">{p.data.title.split(' for ')[0].split(' — ')[0].split(' (')[0]}</span>
+            </span>
+            <span class="nav-tab-arrow shrink-0 w-7 h-7 rounded-full border border-line flex items-center
+                         justify-center text-ink/40">
+              <Icon name="arrow" size={12} />
+            </span>
+          </button>
+        ))}
+      </div>
+
+      <div class="col-span-8">
+        {menuItems.map(({ product: p, img }, i) => (
+          <div class={`nav-panel${i === 0 ? ' show' : ''} grid-cols-12 gap-6 items-start`}
+               id={`nav-panel-${i}`} role="tabpanel">
+            <div class="col-span-5">
+              <div class="photo rounded-lg" style={`--img:url('${img.src}');height:150px`}></div>
+            </div>
+            <div class="col-span-7">
+              <p class="font-mono text-[10px] text-red mb-2">SERIES {p.data.series}</p>
+              <h3 class="text-lg font-medium leading-tight">{p.data.title}</h3>
+              <p class="mt-2 text-ink/60 text-sm leading-relaxed line-clamp-3">{p.data.summary}</p>
+              <a href={`/products/${p.slug}`}
+                 class="mt-3 inline-flex items-center gap-2 text-red text-sm font-medium hover:gap-3 transition-all">
+                Full specification
+                <Icon name="arrow" size={13} />
+              </a>
+            </div>
+          </div>
+        ))}
+        <a href="/products" class="mt-6 pt-5 border-t border-line font-mono text-xs text-red
+                                   inline-flex items-center gap-2 hover:gap-3 transition-all">
+          View all products
+          <Icon name="arrow" size={13} />
+        </a>
+      </div>
+    </div>
   </div>
 
   <div id="mMenu" class="lg:hidden hidden border-t border-line bg-white">
@@ -54,5 +137,40 @@ const logo = await getImage({ src: logoSrc, width: logoSrc.width, format: 'webp'
     };
     btn.addEventListener('click', () => set(menu.classList.contains('hidden')));
     menu.querySelectorAll('a').forEach((a) => a.addEventListener('click', () => set(false)));
+  }
+
+  /* Products mega-menu: click to open/close, click outside or Escape to close */
+  const pTrigger = document.getElementById('productsTrigger');
+  const pMenu = document.getElementById('productsMenu');
+  const pChevron = document.getElementById('productsChevron');
+  if (pTrigger && pMenu) {
+    const setMenu = (isOpen: boolean) => {
+      pMenu.classList.toggle('hidden', !isOpen);
+      pTrigger.setAttribute('aria-expanded', String(isOpen));
+      pChevron?.classList.toggle('rotate-180', isOpen);
+    };
+    pTrigger.addEventListener('click', (e) => {
+      e.stopPropagation();
+      setMenu(pMenu.classList.contains('hidden'));
+    });
+    document.addEventListener('click', (e) => {
+      if (!pMenu.contains(e.target as Node) && e.target !== pTrigger) setMenu(false);
+    });
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') setMenu(false); });
+    pMenu.querySelectorAll('a').forEach((a) => a.addEventListener('click', () => setMenu(false)));
+
+    /* left-list tab switching inside the mega-menu */
+    const navTabs = [...pMenu.querySelectorAll<HTMLElement>('.nav-tab')];
+    const navPanels = [...pMenu.querySelectorAll<HTMLElement>('.nav-panel')];
+    navTabs.forEach((t) => {
+      t.addEventListener('click', () => {
+        const i = Number(t.dataset.nt);
+        navTabs.forEach((x) => { x.classList.remove('active'); x.setAttribute('aria-selected', 'false'); });
+        navPanels.forEach((p) => p.classList.remove('show'));
+        t.classList.add('active');
+        t.setAttribute('aria-selected', 'true');
+        navPanels[i]?.classList.add('show');
+      });
+    });
   }
 </script>
