@@ -2,36 +2,37 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Client request: every dark ("ink") background site-wide becomes a glossy
-   navy gradient instead of near-black (a copper version was tried first and
-   rejected — navy is the well-established pairing for a red accent, cool
-   balancing red's heat, and it's the colour language the transformer/power
-   industry itself already speaks — Siemens Energy, Hitachi Energy, GE
-   Vernova, all the client's own reference sites are blue-branded).
-   Overrides Tailwind's .bg-ink* utilities directly (same technique as the
-   .tab/.panel overrides further down) — placed right after @tailwind
-   utilities so it wins the cascade without needing !important. Deliberately
-   does NOT touch .text-ink or .border-ink, which are separate generated
-   classes used for body copy — only the background-color utilities are
-   redefined.
-   .bg-ink   — primary sections (hero, footer, dark page bands): full gloss
-               highlight + diagonal gradient.
+/* Client request: every dark ("ink") background site-wide becomes a subtle,
+   muted gradient instead of flat near-black. Two earlier attempts (copper,
+   then full-saturation navy) were both rejected as too loud/vivid — the
+   fix isn't a different hue, it's dialing saturation way down. This is
+   "Muted Slate": a heavily desaturated blue-grey charcoal that keeps a
+   faint whisper of the cool tone that pairs well with the red accent
+   (researched: navy/cool tones are the established complement to red),
+   without reading as "a blue site." Overrides Tailwind's .bg-ink*
+   utilities directly (same technique as the .tab/.panel overrides further
+   down) — placed right after @tailwind utilities so it wins the cascade
+   without needing !important. Deliberately does NOT touch .text-ink or
+   .border-ink, which are separate generated classes used for body copy —
+   only the background-color utilities are redefined.
+   .bg-ink   — primary sections (hero, footer, dark page bands): soft
+               highlight + gentle diagonal gradient.
    .bg-ink-2 / .bg-ink-3 — smaller nested elements (form fields, mini
-               panels): simpler two-tone gradient, no gloss highlight, so
-               it doesn't look busy at small sizes. */
+               panels): simpler two-tone gradient, no highlight, so it
+               doesn't look busy at small sizes. */
 .bg-ink {
-  background-color: #14264A;
+  background-color: #1E2530;
   background-image:
-    radial-gradient(140% 100% at 15% -20%, rgba(180,205,255,.35), transparent 62%),
-    linear-gradient(135deg, #1B3260 0%, #2F5490 45%, #1E3A66 75%, #0F1E3D 100%);
+    radial-gradient(140% 100% at 15% -20%, rgba(200,215,235,.15), transparent 62%),
+    linear-gradient(135deg, #232B38 0%, #2E3846 45%, #262E3B 75%, #1A2029 100%);
 }
 .bg-ink-2 {
-  background-color: #1B3260;
-  background-image: linear-gradient(135deg, #234876 0%, #2F5490 100%);
+  background-color: #232B38;
+  background-image: linear-gradient(135deg, #262E3B 0%, #333D4D 100%);
 }
 .bg-ink-3 {
-  background-color: #2F5490;
-  background-image: linear-gradient(135deg, #35608F 0%, #4A6FA5 100%);
+  background-color: #2E3846;
+  background-image: linear-gradient(135deg, #333D4D 0%, #454F5E 100%);
 }
 
 @layer base {
@@ -110,10 +111,10 @@
 /* page-load curtain */
 #curtain {
   position: fixed; inset: 0; z-index: 200;
-  background-color: #14264A;
+  background-color: #1E2530;
   background-image:
-    radial-gradient(140% 100% at 15% -20%, rgba(180,205,255,.35), transparent 62%),
-    linear-gradient(135deg, #1B3260 0%, #2F5490 45%, #1E3A66 75%, #0F1E3D 100%);
+    radial-gradient(140% 100% at 15% -20%, rgba(200,215,235,.15), transparent 62%),
+    linear-gradient(135deg, #232B38 0%, #2E3846 45%, #262E3B 75%, #1A2029 100%);
   display: flex; align-items: center; justify-content: center;
   transition: transform 1s cubic-bezier(.76,0,.24,1), opacity .6s ease .35s;
 }
@@ -166,8 +167,8 @@
   /* left side stays dark enough for text contrast; right side lightened so
      the photo reads through clearly instead of looking blackish overall */
   background:
-    linear-gradient(90deg, rgba(15,30,61,.85) 0%, rgba(15,30,61,.6) 45%, rgba(15,30,61,.22) 100%),
-    linear-gradient(0deg, rgba(142,8,16,.14), rgba(15,30,61,.1));
+    linear-gradient(90deg, rgba(26,32,41,.85) 0%, rgba(26,32,41,.6) 45%, rgba(26,32,41,.22) 100%),
+    linear-gradient(0deg, rgba(142,8,16,.14), rgba(26,32,41,.1));
 }
 .slide-inner { position: absolute; inset: 0; display: flex; align-items: center; z-index: 3; }
 .slide .s-a { opacity: 0; transform: translateY(22px); }
@@ -303,8 +304,8 @@ header[data-head].hide { transform: translateY(-100%); }
 #toTop {
   position: fixed; z-index: 90; bottom: 5.9rem; right: 1.25rem;
   width: 46px; height: 46px; border-radius: 999px;
-  background-color: #1B3260;
-  background-image: linear-gradient(135deg, #234876 0%, #2F5490 100%);
+  background-color: #232B38;
+  background-image: linear-gradient(135deg, #262E3B 0%, #333D4D 100%);
   color: #fff;
   display: flex; align-items: center; justify-content: center;
   opacity: 0; transform: translateY(14px) scale(.9); pointer-events: none;
