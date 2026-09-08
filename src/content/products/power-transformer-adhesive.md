@@ -1,10 +1,10 @@
 ---
-title: "High-Strength Adhesive for Power Transformers (ATP Series)"
+title: "Power Transformer Adhesive"
 series: "ATP"
 summary: "Aqua Tech Polymers manufactures ATP-3900B and ATP-120, high-strength adhesives for Power Transformer applications with proven suitability for bonding and manufacturing large insulation cylinders from 8 to 10 feet in length."
-metaTitle: "ATP High-Strength Adhesive for Power Transformers"
+metaTitle: "Power Transformer Adhesive | ATP Series | Aqua Tech"
 metaDescription: "ATP-3900B and ATP-120 high-strength adhesives for power transformer insulation cylinders, 8-10 feet long. An Indian alternative to imported adhesives."
-order: 3
+order: 2
 # NOTE: technical spec numbers pending from the client — see row below.
 specs:
   - { label: "Available grades", value: "ATP-3900B, ATP-120" }

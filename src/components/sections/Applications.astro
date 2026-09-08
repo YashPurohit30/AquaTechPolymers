@@ -14,21 +14,30 @@ import insulationComponentsSrc from '@/assets/images/electrical-insulation-compo
 
 const items = [
   {
-    slug: 'distribution-transformers', title: 'Distribution transformers', src: distributionSrc,
-    body: 'PBA series bonding adhesive (PBA 90R, PBA 93 MV, PBA 96MHV) for core-to-coil and structural bonding, and CPT crepe paper tube adhesive for insulation components — both available with customised characteristics based on your process.',
+    slug: 'distribution-transformers', title: 'Distribution Transformer', src: distributionSrc,
+    body: 'Crepe paper tube adhesive for insulation components and kraft paper adhesive for insulation kraft paper bonding — both available with customised characteristics based on your process.',
   },
   {
-    slug: 'power-transformers', title: 'Power transformers', src: powerSrc,
-    body: 'The ATP series (ATP-3900B, ATP-120) for bonding and manufacturing 8–10 foot insulation cylinders, and CPT crepe paper tube adhesive — supplied to leading Indian power transformer manufacturers under annual supply contracts, as a cost-effective alternative to imported adhesives.',
+    slug: 'power-transformers', title: 'Power Transformer', src: powerSrc,
+    body: 'Power transformer adhesive (ATP-3900B, ATP-120 grades) for bonding 8–10 foot insulation cylinders, and crepe paper tube adhesive — supplied to leading Indian power transformer manufacturers under annual supply contracts.',
+  },
+  {
+    slug: 'press-board-components', title: 'Press Board Components', src: boardComponentsSrc,
+    body: 'Press board adhesive for bonding press board components used in transformer and electrical insulation manufacturing, available with customised characteristics based on your process.',
+  },
+  {
+    slug: 'insulation-kit', title: 'Insulation Kit', src: insulationComponentsSrc,
+    body: 'Kraft paper adhesive for insulation kit components used in transformer and electrical insulation manufacturing, available with customised characteristics based on your process.',
   },
 ];
 const equipment = await Promise.all(
   items.map(async (i) => ({ ...i, img: await getImage({ src: i.src, width: 640, height: 320, format: 'webp' }) }))
 );
 
-// Material/component categories the client supplies into — all nine now
-// have a photo, so the grid reads as one consistent set instead of a mix
-// of photo cards and plain text pills.
+// Material/component categories the client supplies into. "Press Board
+// Components" and "Insulation Kit" moved up to full equipment cards above
+// (they're now applications in their own right), so dropped from here to
+// avoid showing the same thing twice.
 const withPhoto = await Promise.all(
   [
     { label: 'Press Board', src: pressBoardSrc },
@@ -37,7 +46,6 @@ const withPhoto = await Promise.all(
     { label: 'Spacers', src: spacersSrc },
     { label: 'Crepe Paper Tubes', src: crepeTubeSrc },
     { label: 'Pre-Compressed Board', src: preCompressedSrc },
-    { label: 'Press Board Components', src: boardComponentsSrc },
     { label: 'Dovetail Strips', src: dovetailSrc },
     { label: 'Electrical Insulation Components', src: insulationComponentsSrc },
   ].map(async (i) => ({ label: i.label, img: await getImage({ src: i.src, width: 480, format: 'webp' }) }))

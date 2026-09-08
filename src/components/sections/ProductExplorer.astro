@@ -3,10 +3,10 @@ import { getCollection } from 'astro:content';
 import { getImage } from 'astro:assets';
 import SpecTable from '@/components/ui/SpecTable.astro';
 import Icon from '@/components/ui/Icon.astro';
-import distributionSrc from '@/assets/images/hero-distribution-transformer.jpg';
 import crepeWrapSrc from '@/assets/images/hero-crepe-paper-wrap.jpg';
 import powerSrc from '@/assets/images/hero-power-transformer-substation.jpg';
-import windingSrc from '@/assets/images/winding-core.jpg';
+import pressBoardSrc from '@/assets/images/press-board.jpg';
+import kraftPaperSrc from '@/assets/images/kraft-paper.jpg';
 
 // GEO-CRITICAL: every panel is rendered into the HTML at build time and
 // toggled with CSS. Never mount panels on click — that hides four fifths
@@ -18,10 +18,10 @@ const products = (await getCollection('products')).sort(
 // Photos are contextual (what the product goes into / how it's used), not
 // product-shot photography — no photos of the adhesive itself exist yet.
 const photoByProduct: Record<string, ImageMetadata> = {
-  'pba-series': distributionSrc,
+  'press-board-adhesive': pressBoardSrc,
+  'power-transformer-adhesive': powerSrc,
+  'kraft-paper-adhesive': kraftPaperSrc,
   'crepe-paper-tube-adhesive': crepeWrapSrc,
-  'atp-power-transformer-series': powerSrc,
-  'cotton-tape': windingSrc,
 };
 const panels = await Promise.all(
   products.map(async (p) => ({

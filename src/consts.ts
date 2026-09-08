@@ -6,7 +6,7 @@ export const SITE = {
   name: 'Aqua Tech Polymers',
   url: 'https://aquatechpolymers.com',
   description:
-    'Manufacturer of bonding adhesives, crepe paper tube adhesive and cotton tape for transformer and electrical insulation manufacturers.',
+    'Manufacturer of press board, power transformer, kraft paper and crepe paper tube adhesives for transformer and electrical insulation manufacturers.',
   founded: '2004',
   locale: 'en_IN',
 } as const;

@@ -1,10 +1,10 @@
 ---
-title: "Crepe Paper Tube Adhesive (CPT)"
+title: "Crepe Paper Tube Adhesive"
 series: "CPT"
 summary: "Aqua Tech Polymers' CPT adhesive is developed for bonding paper layers in crepe paper tube manufacturing for the transformer and electrical insulation industry, supporting durable, dimensionally stable tubes with consistent application performance."
-metaTitle: "CPT — Crepe Paper Tube Adhesive | Aqua Tech"
+metaTitle: "Crepe Paper Tube Adhesive | CPT | Aqua Tech"
 metaDescription: "Crepe paper tube adhesive for transformer and electrical insulation manufacturing. Consistent bonding between paper layers. Customised formulations available."
-order: 2
+order: 4
 # NOTE: technical spec numbers pending from the client — see row below.
 specs:
   - { label: "Application", value: "Crepe paper tube manufacturing (transformer & electrical insulation industry)" }

@@ -7,7 +7,10 @@ import logoSrc from '@/assets/images/logo.png';
 import distributionSrc from '@/assets/images/hero-distribution-transformer.jpg';
 import crepeWrapSrc from '@/assets/images/hero-crepe-paper-wrap.jpg';
 import powerSrc from '@/assets/images/hero-power-transformer-substation.jpg';
-import windingSrc from '@/assets/images/winding-core.jpg';
+import pressBoardSrc from '@/assets/images/press-board.jpg';
+import kraftPaperSrc from '@/assets/images/kraft-paper.jpg';
+import pressBoardComponentsSrc from '@/assets/images/press-board-components.jpg';
+import insulationKitSrc from '@/assets/images/electrical-insulation-components.jpg';
 
 const logo = await getImage({ src: logoSrc, width: logoSrc.width, format: 'webp' });
 
@@ -15,10 +18,10 @@ const logo = await getImage({ src: logoSrc, width: logoSrc.width, format: 'webp'
 // section — this dropdown is a compact preview of that same content.
 const products = (await getCollection('products')).sort((a, b) => a.data.order - b.data.order);
 const photoByProduct: Record<string, ImageMetadata> = {
-  'pba-series': distributionSrc,
+  'press-board-adhesive': pressBoardSrc,
+  'power-transformer-adhesive': powerSrc,
+  'kraft-paper-adhesive': kraftPaperSrc,
   'crepe-paper-tube-adhesive': crepeWrapSrc,
-  'atp-power-transformer-series': powerSrc,
-  'cotton-tape': windingSrc,
 };
 const menuItems = await Promise.all(
   products.map(async (p) => ({
@@ -27,12 +30,13 @@ const menuItems = await Promise.all(
   }))
 );
 
-// Same pattern for the Applications dropdown — reuses the same two photos
-// already imported above, keyed by application slug instead of product slug.
+// Same pattern for the Applications dropdown.
 const applications = (await getCollection('applications')).sort((a, b) => a.data.order - b.data.order);
 const photoByApplication: Record<string, ImageMetadata> = {
   'distribution-transformers': distributionSrc,
   'power-transformers': powerSrc,
+  'press-board-components': pressBoardComponentsSrc,
+  'insulation-kit': insulationKitSrc,
 };
 const appMenuItems = await Promise.all(
   applications.map(async (a) => ({

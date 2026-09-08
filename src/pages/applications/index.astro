@@ -25,12 +25,14 @@ const cardImg: Record<string, string> = Object.fromEntries(await Promise.all(
   [
     ['distribution-transformers', distributionSrc],
     ['power-transformers', powerSrc],
+    ['press-board-components', boardComponentsSrc],
+    ['insulation-kit', insulationComponentsSrc],
   ].map(async ([slug, src]) => [slug, (await getImage({ src, width: 640, height: 360, format: 'webp' })).src])
 ));
 
-// Material/component categories the client supplies into — all nine now
-// have a photo, so the grid reads as one consistent set instead of a mix
-// of photo cards and plain text pills.
+// Material/component categories the client supplies into. "Press Board
+// Components" and "Insulation Kit" are now full application cards above,
+// so dropped from here to avoid showing the same thing twice.
 const withPhoto = await Promise.all(
   [
     { label: 'Press Board', src: pressBoardSrc },
@@ -39,9 +41,7 @@ const withPhoto = await Promise.all(
     { label: 'Spacers', src: spacersSrc },
     { label: 'Crepe Paper Tubes', src: crepeTubeSrc },
     { label: 'Pre-Compressed Board', src: preCompressedSrc },
-    { label: 'Press Board Components', src: boardComponentsSrc },
     { label: 'Dovetail Strips', src: dovetailSrc },
-    { label: 'Electrical Insulation Components', src: insulationComponentsSrc },
   ].map(async (i) => ({ label: i.label, img: await getImage({ src: i.src, width: 480, format: 'webp' }) }))
 );
 ---
