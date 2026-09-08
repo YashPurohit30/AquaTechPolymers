@@ -44,18 +44,18 @@ const appMenuItems = await Promise.all(
 <header id="top" data-head class="sticky top-0 z-50 border-b border-line">
   <!-- top strip: brand red, logo only -->
   <div class="bg-red">
-    <div class="max-w-[1240px] mx-auto px-5 sm:px-8 h-24 flex items-center">
+    <div class="max-w-[1240px] mx-auto px-5 sm:px-8 h-28 flex items-center">
       <a href="/" class="flex items-center shrink-0">
         <img src={logo.src} width={logo.attributes.width} height={logo.attributes.height}
-             alt="Aqua Tech Polymers" class="h-20 w-auto" />
+             alt="Aqua Tech Polymers" class="h-24 w-auto" />
       </a>
     </div>
   </div>
 
   <!-- nav strip: white, kept compact since the red strip above now carries the brand -->
   <div class="bg-white/95 backdrop-blur">
-    <div class="max-w-[1240px] mx-auto px-5 sm:px-8 h-12 flex items-center justify-end gap-8">
-      <nav class="hidden lg:flex items-center gap-9 text-[15px] text-ink/80" aria-label="Main">
+    <div class="max-w-[1240px] mx-auto px-5 sm:px-8 h-14 flex items-center justify-end gap-8">
+      <nav class="hidden lg:flex items-center gap-9 text-[17px] font-semibold text-ink/80" aria-label="Main">
         {NAV.map((n) => n.label === 'Products' ? (
           <div class="relative">
             <button id="productsTrigger" class="nav-a flex items-center gap-1.5" aria-expanded="false"
@@ -203,7 +203,7 @@ const appMenuItems = await Promise.all(
 
   <div id="mMenu" class="lg:hidden hidden border-t border-line bg-white">
     <nav class="max-w-[1240px] mx-auto px-5 py-3 flex flex-col divide-y divide-line" aria-label="Mobile">
-      {NAV.map((n) => <a href={n.href} class="py-3.5">{n.label}</a>)}
+      {NAV.map((n) => <a href={n.href} class="py-3.5 text-[17px] font-semibold">{n.label}</a>)}
       <a href="/contact" class="mt-3 mb-2 btn-red text-white text-center py-3.5 rounded-md font-medium">
         Request a sample
       </a>
