@@ -40,7 +40,7 @@ const menuItems = await Promise.all(
 
   <!-- nav strip: white, kept compact since the red strip above now carries the brand -->
   <div class="bg-white/95 backdrop-blur">
-    <div class="max-w-[1240px] mx-auto px-5 sm:px-8 h-12 flex items-center justify-between">
+    <div class="max-w-[1240px] mx-auto px-5 sm:px-8 h-12 flex items-center justify-end gap-8">
       <nav class="hidden lg:flex items-center gap-9 text-[15px] text-ink/80" aria-label="Main">
         {NAV.map((n) => n.label === 'Products' ? (
           <div class="relative">
@@ -59,12 +59,12 @@ const menuItems = await Promise.all(
       </nav>
 
       <a href="/contact"
-         class="hidden lg:inline-flex btn btn-red items-center gap-2 text-white px-6 py-3 rounded-md font-medium text-sm whitespace-nowrap ml-auto">
+         class="hidden lg:inline-flex btn btn-red items-center gap-2 text-white px-6 py-3 rounded-md font-medium text-sm whitespace-nowrap">
         Request a sample
         <Icon name="arrow" size={14} />
       </a>
 
-      <button id="mBtn" class="lg:hidden ml-auto w-11 h-11 rounded-md border border-line flex items-center justify-center"
+      <button id="mBtn" class="lg:hidden w-11 h-11 rounded-md border border-line flex items-center justify-center"
               aria-label="Toggle menu" aria-expanded="false" aria-controls="mMenu">
         <Icon name="menu" size={22} class="block" />
         <Icon name="close" size={22} class="hidden" />

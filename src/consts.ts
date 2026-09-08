@@ -29,7 +29,6 @@ export const WHATSAPP_URL =
 export const NAV = [
   { label: 'Solutions',    href: '/#solutions' },
   { label: 'Products',     href: '/products' },
-  { label: 'How we work',  href: '/#process' },
   { label: 'Applications', href: '/applications' },
   { label: 'FAQ',          href: '/#faq' },
 ] as const;
