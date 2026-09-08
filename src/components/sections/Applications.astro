@@ -7,6 +7,10 @@ import laminatedBoardSrc from '@/assets/images/laminated-board.jpg';
 import kraftPaperSrc from '@/assets/images/kraft-paper.jpg';
 import spacersSrc from '@/assets/images/spacers.png';
 import crepeTubeSrc from '@/assets/images/crepe-paper-tube-core.jpg';
+import preCompressedSrc from '@/assets/images/pre-compressed-board.jpg';
+import boardComponentsSrc from '@/assets/images/press-board-components.jpg';
+import dovetailSrc from '@/assets/images/dovetail-strips.png';
+import insulationComponentsSrc from '@/assets/images/electrical-insulation-components.jpg';
 
 const items = [
   {
@@ -22,7 +26,9 @@ const equipment = await Promise.all(
   items.map(async (i) => ({ ...i, img: await getImage({ src: i.src, width: 640, height: 320, format: 'webp' }) }))
 );
 
-// Material/component categories with client photography.
+// Material/component categories the client supplies into — all nine now
+// have a photo, so the grid reads as one consistent set instead of a mix
+// of photo cards and plain text pills.
 const withPhoto = await Promise.all(
   [
     { label: 'Press Board', src: pressBoardSrc },
@@ -30,11 +36,12 @@ const withPhoto = await Promise.all(
     { label: 'Insulation Kraft Paper', src: kraftPaperSrc },
     { label: 'Spacers', src: spacersSrc },
     { label: 'Crepe Paper Tubes', src: crepeTubeSrc },
+    { label: 'Pre-Compressed Board', src: preCompressedSrc },
+    { label: 'Press Board Components', src: boardComponentsSrc },
+    { label: 'Dovetail Strips', src: dovetailSrc },
+    { label: 'Electrical Insulation Components', src: insulationComponentsSrc },
   ].map(async (i) => ({ label: i.label, img: await getImage({ src: i.src, width: 480, format: 'webp' }) }))
 );
-
-// Everything else in the client's supplied-for list, no photo yet.
-const alsoSupplied = ['Pre-Compressed Board', 'Press Board Components', 'Dovetail Strips', 'Electrical Insulation Components'];
 ---
 <section id="applications" class="grain glow-zone py-24 lg:py-32 bg-ink text-white relative overflow-hidden">
   <div class="cursor-glow"></div>
@@ -69,20 +76,13 @@ const alsoSupplied = ['Pre-Compressed Board', 'Press Board Components', 'Dovetai
       </div>
 
       <p class="font-mono text-xs text-red-2 mt-10 mb-4">ALSO SUPPLIED FOR</p>
-      <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
+      <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
         {withPhoto.map((i) => (
           <div class="rounded-lg overflow-hidden border border-white/12 rv">
             <img src={i.img.src} width={i.img.attributes.width} height={i.img.attributes.height}
                  alt={i.label} loading="lazy" class="w-full h-20 object-cover" />
             <p class="text-xs text-white/70 px-2.5 py-2 leading-snug">{i.label}</p>
           </div>
-        ))}
-      </div>
-      <div class="flex flex-wrap gap-3 mt-3">
-        {alsoSupplied.map((item) => (
-          <span class="border border-white/15 rounded-full px-5 py-2.5 text-sm text-white/70">
-            {item}
-          </span>
         ))}
       </div>
     </div>
