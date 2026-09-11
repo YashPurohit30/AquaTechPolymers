@@ -11,6 +11,14 @@ import kraftPaperSrc from '@/assets/images/kraft-paper.jpg';
 // GEO-CRITICAL: every panel is rendered into the HTML at build time and
 // toggled with CSS. Never mount panels on click — that hides four fifths
 // of the product content from AI crawlers.
+//
+// Reused on both the homepage (with its own heading + "View all products"
+// link) and the dedicated /products page (heading suppressed — that page
+// already has its own hero band, and a self-referential "view all" link
+// makes no sense once you're already there).
+interface Props { showHeader?: boolean }
+const { showHeader = true } = Astro.props;
+
 const products = (await getCollection('products')).sort(
   (a, b) => a.data.order - b.data.order
 );
@@ -32,21 +40,23 @@ const panels = await Promise.all(
 ---
 <section id="products" class="py-24 lg:py-32 bg-bone border-y border-line">
   <div class="max-w-[1240px] mx-auto px-5 sm:px-8">
-    <div class="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-5 rv">
-      <div class="max-w-xl">
-        <p class="kicker-rule text-red mb-5">The range</p>
-        <h2 class="split leading-[1.08] font-light" style="font-size:clamp(2rem,3.6vw,3rem)">
-          Pick a category to see what's inside it
-        </h2>
+    {showHeader && (
+      <div class="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-5 rv">
+        <div class="max-w-xl">
+          <p class="kicker-rule text-red mb-5">The range</p>
+          <h2 class="split leading-[1.08] font-light" style="font-size:clamp(2rem,3.6vw,3rem)">
+            Pick a category to see what's inside it
+          </h2>
+        </div>
+        <a href="/products" class="font-mono text-sm text-red inline-flex items-center gap-2
+                                   hover:gap-3 transition-all whitespace-nowrap">
+          View all products
+          <Icon name="arrow" />
+        </a>
       </div>
-      <a href="/products" class="font-mono text-sm text-red inline-flex items-center gap-2
-                                 hover:gap-3 transition-all whitespace-nowrap">
-        View all products
-        <Icon name="arrow" />
-      </a>
-    </div>
+    )}
 
-    <div class="mt-12 grid lg:grid-cols-12 gap-6 lg:gap-8 items-start rv">
+    <div class={`grid lg:grid-cols-12 gap-6 lg:gap-8 items-start rv ${showHeader ? 'mt-12' : ''}`}>
       <!-- left: vertical product list -->
       <div class="lg:col-span-4 bg-white border border-line rounded-2xl overflow-hidden divide-y divide-line"
            role="tablist">
@@ -99,10 +109,10 @@ const panels = await Promise.all(
 </section>
 
 <script>
-  // Homepage-only — rebuilds fresh on each View Transitions landing on "/",
-  // so this re-runs on `astro:page-load`. No document-level listeners here,
-  // so no cross-navigation guarding needed — every binding targets a
-  // .tab element that's freshly created per page load.
+  // Used on both "/" and "/products" — rebuilds fresh on each View
+  // Transitions landing on either page, so this re-runs on `astro:page-load`.
+  // No document-level listeners here, so no cross-navigation guarding
+  // needed — every binding targets a .tab element freshly created per load.
   function explorerSetup() {
     const tabs = [...document.querySelectorAll<HTMLElement>('.tab')];
     const panels = [...document.querySelectorAll<HTMLElement>('.panel')];
