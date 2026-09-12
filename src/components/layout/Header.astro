@@ -147,18 +147,20 @@ const appMenuItems = await Promise.all(
         {menuItems.map(({ product: p, img }, i) => (
           <div class={`nav-panel${i === 0 ? ' show' : ''} grid-cols-12 gap-8 items-center`}
                id={`nav-panel-${i}`} role="tabpanel">
-            <div class="col-span-6">
-              <div class="photo rounded-lg" style={`--img:url('${img.src}');height:150px`}></div>
-            </div>
-            <div class="col-span-6">
-              <h3 class="text-lg font-medium leading-tight">{p.data.title}</h3>
-              <p class="mt-2 text-ink/60 text-sm leading-relaxed line-clamp-3">{p.data.summary}</p>
-              <a href={`/products/${p.slug}`}
-                 class="mt-3 inline-flex items-center gap-2 text-red text-sm font-medium hover:gap-3 transition-all">
-                Full specification
-                <Icon name="arrow" size={13} />
-              </a>
-            </div>
+            <a href={`/products/${p.slug}`} class="contents group" aria-label={`View full specification: ${p.data.title}`}>
+              <div class="col-span-6">
+                <div class="photo rounded-lg" style={`--img:url('${img.src}');height:150px`}></div>
+              </div>
+              <div class="col-span-6">
+                <h3 class="text-lg font-medium leading-tight">{p.data.title}</h3>
+                <p class="mt-2 text-ink/60 text-sm leading-relaxed line-clamp-3">{p.data.summary}</p>
+                <span class="mt-3 inline-flex items-center gap-2 text-red text-sm font-medium
+                            group-hover:gap-3 transition-all">
+                  Full specification
+                  <Icon name="arrow" size={13} />
+                </span>
+              </div>
+            </a>
           </div>
         ))}
       </div>
@@ -203,18 +205,20 @@ const appMenuItems = await Promise.all(
         {appMenuItems.map(({ app: a, img }, i) => (
           <div class={`nav-panel${i === 0 ? ' show' : ''} grid-cols-12 gap-8 items-center`}
                id={`app-nav-panel-${i}`} role="tabpanel">
-            <div class="col-span-6">
-              <div class="photo rounded-lg" style={`--img:url('${img.src}');height:150px`}></div>
-            </div>
-            <div class="col-span-6">
-              <h3 class="text-lg font-medium leading-tight">{a.data.title}</h3>
-              <p class="mt-2 text-ink/60 text-sm leading-relaxed line-clamp-3">{a.data.summary}</p>
-              <a href={`/applications/${a.slug}`}
-                 class="mt-3 inline-flex items-center gap-2 text-red text-sm font-medium hover:gap-3 transition-all">
-                View application
-                <Icon name="arrow" size={13} />
-              </a>
-            </div>
+            <a href={`/applications/${a.slug}`} class="contents group" aria-label={`View application: ${a.data.title}`}>
+              <div class="col-span-6">
+                <div class="photo rounded-lg" style={`--img:url('${img.src}');height:150px`}></div>
+              </div>
+              <div class="col-span-6">
+                <h3 class="text-lg font-medium leading-tight">{a.data.title}</h3>
+                <p class="mt-2 text-ink/60 text-sm leading-relaxed line-clamp-3">{a.data.summary}</p>
+                <span class="mt-3 inline-flex items-center gap-2 text-red text-sm font-medium
+                            group-hover:gap-3 transition-all">
+                  View application
+                  <Icon name="arrow" size={13} />
+                </span>
+              </div>
+            </a>
           </div>
         ))}
       </div>
