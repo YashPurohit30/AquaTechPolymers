@@ -289,9 +289,11 @@ const appMenuItems = await Promise.all(
 
       // trigger is now a real link (was a toggle-only button — clicking it
       // did nothing but open the preview, never actually navigated to the
-      // page). Hover/focus still show the preview; a click just follows
-      // the link natively, same as any other nav item.
+      // page). Hover/focus still show the preview; a click follows the link
+      // natively, but closes the dropdown first so it isn't left open behind
+      // the page during the View Transitions navigation.
       trigger.addEventListener('focus', () => setMenu(true));
+      trigger.addEventListener('click', () => setMenu(false));
       menu.querySelectorAll('a').forEach((a) => a.addEventListener('click', () => setMenu(false)));
 
       /* left-list tab switching inside this mega-menu — hover switches too */
