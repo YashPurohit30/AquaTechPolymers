@@ -1,0 +1,70 @@
+---
+import { getCollection } from 'astro:content';
+
+// Card-grid style requested by client (screenshot reference): kicker + bold
+// heading + top-right link, grid of white cards each with a red code label,
+// a circular icon, bold title, grey description. Wired to the real 4-product
+// catalog (Press Board / Power Transformer / Kraft Paper / Crepe Paper Tube
+// Adhesive) — GEO-CRITICAL: plain server-rendered links/cards, no JS mounting.
+const products = (await getCollection('products')).sort(
+  (a, b) => a.data.order - b.data.order
+);
+
+// One representative icon per product category, drawn inline so this stays
+// self-contained (Icon.astro's set is for nav chrome, not product glyphs).
+const icons: Record<string, string> = {
+  'press-board-adhesive':
+    'M4 7l8-3 8 3-8 3-8-3zm0 5l8 3 8-3M4 17l8 3 8-3',
+  'power-transformer-adhesive':
+    'M13 2 4 14h7l-1 8 9-12h-7l1-8z',
+  'kraft-paper-adhesive':
+    'M6 3h9l3 3v15H6V3zm9 0v3h3M9 12h6M9 16h6',
+  'crepe-paper-tube-adhesive':
+    'M12 4c4 0 7 1.3 7 3s-3 3-7 3-7-1.3-7-3 3-3 7-3zm-7 3v10c0 1.7 3 3 7 3s7-1.3 7-3V7',
+};
+---
+<section class="py-24 lg:py-32 bg-bone border-y border-line">
+  <div class="max-w-[1240px] mx-auto px-5 sm:px-8">
+    <div class="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-5 rv">
+      <div>
+        <p class="kicker-rule text-red mb-5">Products by category</p>
+        <h2 class="leading-[1.08] font-light" style="font-size:clamp(2rem,3.6vw,3rem)">
+          The full adhesive range
+        </h2>
+      </div>
+      <a href="/contact" class="font-mono text-sm text-red inline-flex items-center gap-2
+                                hover:gap-3 transition-all whitespace-nowrap">
+        Request full catalogue
+        <span aria-hidden="true">&rarr;</span>
+      </a>
+    </div>
+
+    <div class="mt-12 grid sm:grid-cols-2 lg:grid-cols-4 gap-6 rv">
+      {products.map((p) => (
+        <a href={`/products/${p.slug}`}
+           class="lift group bg-white border border-line rounded-2xl p-7 flex flex-col">
+          <div class="flex items-start justify-between">
+            <span class="font-mono text-xs tracking-wider text-red">{p.data.series}</span>
+            <span class="shrink-0 w-11 h-11 rounded-full bg-bone flex items-center justify-center text-red">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                   stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d={icons[p.slug]} />
+              </svg>
+            </span>
+          </div>
+          <h3 class="mt-6 text-lg font-medium text-ink leading-snug">
+            {p.data.title}
+          </h3>
+          <p class="mt-2 text-sm text-ink/60 leading-relaxed">
+            {p.data.summary}
+          </p>
+          <span class="mt-6 font-mono text-xs text-red inline-flex items-center gap-2
+                       group-hover:gap-3 transition-all">
+            Full specification
+            <span aria-hidden="true">&rarr;</span>
+          </span>
+        </a>
+      ))}
+    </div>
+  </div>
+</section>

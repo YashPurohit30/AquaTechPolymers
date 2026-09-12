@@ -2,7 +2,7 @@
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import Footer from '@/components/layout/Footer.astro';
 import EnquiryForm from '@/components/forms/EnquiryForm.astro';
-import ProductExplorer from '@/components/sections/ProductExplorer.astro';
+import ProductGrid from '@/components/sections/ProductGrid.astro';
 import CTABand from '@/components/sections/CTABand.astro';
 import { breadcrumbSchema } from '@/lib/schema';
 
@@ -29,7 +29,7 @@ const schema = [breadcrumbSchema([
     </div>
   </section>
 
-  <ProductExplorer showHeader={false} />
+  <ProductGrid />
 
   <CTABand />
   <Footer slot="footer"><EnquiryForm slot="form" /></Footer>
