@@ -131,13 +131,14 @@ const appMenuItems = await Promise.all(
         {menuItems.map(({ product: p }, i) => (
           <div class={`nav-tab flex items-center justify-between gap-3${i === 0 ? ' active' : ''}`}
                data-nt={i} role="tab" aria-selected={i === 0} aria-controls={`nav-panel-${i}`}>
-            <button type="button" class="flex-1 min-w-0 text-left pl-5 py-4">
-              <span class="block font-medium text-sm text-ink">{p.data.title.split(' for ')[0].split(' — ')[0].split(' (')[0]}</span>
-            </button>
-            <a href={`/products/${p.slug}`} aria-label={`View full specification: ${p.data.title}`}
-               class="nav-tab-arrow shrink-0 w-7 h-7 mr-5 rounded-full border border-line flex items-center
-                      justify-center text-ink/40">
-              <Icon name="arrow" size={12} />
+            <a href={`/products/${p.slug}`} class="contents" aria-label={`View full specification: ${p.data.title}`}>
+              <span class="flex-1 min-w-0 text-left pl-5 py-4 block font-medium text-sm text-ink">
+                {p.data.title.split(' for ')[0].split(' — ')[0].split(' (')[0]}
+              </span>
+              <span class="nav-tab-arrow shrink-0 w-7 h-7 mr-5 rounded-full border border-line flex items-center
+                          justify-center text-ink/40">
+                <Icon name="arrow" size={12} />
+              </span>
             </a>
           </div>
         ))}
@@ -187,15 +188,14 @@ const appMenuItems = await Promise.all(
         {appMenuItems.map(({ app: a }, i) => (
           <div class={`nav-tab flex items-center justify-between gap-3${i === 0 ? ' active' : ''}`}
                data-nt={i} role="tab" aria-selected={i === 0} aria-controls={`app-nav-panel-${i}`}>
-            <button type="button" class="flex-1 min-w-0 text-left pl-5 py-4">
-              <span class="block font-medium text-sm text-ink">
+            <a href={`/applications/${a.slug}`} class="contents" aria-label={`View application: ${a.data.title}`}>
+              <span class="flex-1 min-w-0 text-left pl-5 py-4 block font-medium text-sm text-ink">
                 {a.data.title.replace(/^Compounds for /, '')}
               </span>
-            </button>
-            <a href={`/applications/${a.slug}`} aria-label={`View application: ${a.data.title}`}
-               class="nav-tab-arrow shrink-0 w-7 h-7 mr-5 rounded-full border border-line flex items-center
-                      justify-center text-ink/40">
-              <Icon name="arrow" size={12} />
+              <span class="nav-tab-arrow shrink-0 w-7 h-7 mr-5 rounded-full border border-line flex items-center
+                          justify-center text-ink/40">
+                <Icon name="arrow" size={12} />
+              </span>
             </a>
           </div>
         ))}
