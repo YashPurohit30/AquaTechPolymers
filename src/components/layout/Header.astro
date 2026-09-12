@@ -11,6 +11,7 @@ import pressBoardSrc from '@/assets/images/press-board.jpg';
 import kraftPaperSrc from '@/assets/images/kraft-paper.jpg';
 import pressBoardComponentsSrc from '@/assets/images/press-board-components.jpg';
 import insulationKitSrc from '@/assets/images/electrical-insulation-components.jpg';
+import windingCoreSrc from '@/assets/images/winding-core.jpg';
 
 const logo = await getImage({ src: logoSrc, width: logoSrc.width, format: 'webp' });
 
@@ -28,6 +29,7 @@ const photoByProduct: Record<string, ImageMetadata> = {
   'power-transformer-adhesive': powerSrc,
   'kraft-paper-adhesive': kraftPaperSrc,
   'crepe-paper-tube-adhesive': crepeWrapSrc,
+  'cotton-tape': windingCoreSrc,
 };
 const menuItems = await Promise.all(
   products.map(async (p) => ({
@@ -239,6 +241,15 @@ const appMenuItems = await Promise.all(
   let headerDocListenersBound = false;
 
   function headerSetup() {
+    // Guards against a View Transitions gotcha: clicking "Products" navigates
+    // without the mouse ever moving, so once the new page's header mounts
+    // under the still-stationary cursor, the browser fires a fresh
+    // mouseenter (and Astro restores focus) on the trigger sitting right
+    // there — reopening the dropdown a beat after the page has already
+    // loaded. Only a genuine mousemove after load re-arms hover/focus-open.
+    let justNavigated = true;
+    document.addEventListener('mousemove', () => { justNavigated = false; }, { once: true });
+
     const btn = document.getElementById('mBtn');
     const menu = document.getElementById('mMenu');
     if (btn && menu) {
@@ -282,7 +293,7 @@ const appMenuItems = await Promise.all(
       setters.push(setMenu);
       const scheduleClose = () => { closeTimer = setTimeout(() => setMenu(false), 350); };
 
-      trigger.addEventListener('mouseenter', () => setMenu(true));
+      trigger.addEventListener('mouseenter', () => { if (!justNavigated) setMenu(true); });
       menu.addEventListener('mouseenter', () => setMenu(true));
       trigger.addEventListener('mouseleave', scheduleClose);
       menu.addEventListener('mouseleave', scheduleClose);
@@ -292,7 +303,7 @@ const appMenuItems = await Promise.all(
       // page). Hover/focus still show the preview; a click follows the link
       // natively, but closes the dropdown first so it isn't left open behind
       // the page during the View Transitions navigation.
-      trigger.addEventListener('focus', () => setMenu(true));
+      trigger.addEventListener('focus', () => { if (!justNavigated) setMenu(true); });
       trigger.addEventListener('click', () => setMenu(false));
       menu.querySelectorAll('a').forEach((a) => a.addEventListener('click', () => setMenu(false)));
 

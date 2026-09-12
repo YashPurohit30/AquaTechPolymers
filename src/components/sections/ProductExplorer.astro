@@ -7,6 +7,7 @@ import crepeWrapSrc from '@/assets/images/hero-crepe-paper-wrap.jpg';
 import powerSrc from '@/assets/images/hero-power-transformer-substation.jpg';
 import pressBoardSrc from '@/assets/images/press-board.jpg';
 import kraftPaperSrc from '@/assets/images/kraft-paper.jpg';
+import windingCoreSrc from '@/assets/images/winding-core.jpg';
 
 // GEO-CRITICAL: every panel is rendered into the HTML at build time and
 // toggled with CSS. Never mount panels on click — that hides four fifths
@@ -30,6 +31,7 @@ const photoByProduct: Record<string, ImageMetadata> = {
   'power-transformer-adhesive': powerSrc,
   'kraft-paper-adhesive': kraftPaperSrc,
   'crepe-paper-tube-adhesive': crepeWrapSrc,
+  'cotton-tape': windingCoreSrc,
 };
 const panels = await Promise.all(
   products.map(async (p) => ({
