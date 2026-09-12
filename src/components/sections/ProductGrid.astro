@@ -7,10 +7,9 @@ import kraftPaperSrc from '@/assets/images/kraft-paper.jpg';
 import crepeWrapSrc from '@/assets/images/hero-crepe-paper-wrap.jpg';
 import windingCoreSrc from '@/assets/images/winding-core.jpg';
 
-// Card style requested by client: a grid of horizontal (landscape) boxes,
-// three per row, each with the product's own contextual photo as its
-// background (same photos used in the header dropdown / homepage explorer),
-// a dark scrim for text contrast, red code label, title and description.
+// Card style requested by client: same look as the header's Applications
+// dropdown panel — white card, photo strip on top, code/title/description
+// below in dark text — laid out as a 3-per-row grid on the /products page.
 // GEO-CRITICAL: plain server-rendered links/cards, no JS mounting.
 const products = (await getCollection('products')).sort(
   (a, b) => a.data.order - b.data.order
@@ -50,16 +49,13 @@ const cards = await Promise.all(
     <div class="mt-12 grid sm:grid-cols-2 lg:grid-cols-3 gap-6 rv">
       {cards.map(({ product: p, img }) => (
         <a href={`/products/${p.slug}`}
-           class="lift group relative rounded-2xl overflow-hidden aspect-[4/3] flex flex-col
-                  justify-end p-6 border border-transparent"
-           style={`background-image:url('${img.src}');background-size:cover;background-position:center`}>
-          <div class="absolute inset-0 bg-gradient-to-t from-ink/95 via-ink/45 to-ink/5
-                     group-hover:from-ink/95 group-hover:via-ink/55 transition-colors"></div>
-          <div class="relative">
-            <span class="font-mono text-xs tracking-wider text-red-2">{p.data.series}</span>
-            <h3 class="mt-1 text-lg font-medium text-white leading-snug">{p.data.title}</h3>
-            <p class="mt-2 text-sm text-white/70 leading-relaxed line-clamp-2">{p.data.summary}</p>
-            <span class="mt-4 font-mono text-xs text-white inline-flex items-center gap-2
+           class="lift group bg-white border border-line rounded-2xl overflow-hidden flex flex-col">
+          <div class="photo" style={`--img:url('${img.src}');height:190px`}></div>
+          <div class="p-6 flex-1 flex flex-col">
+            <span class="font-mono text-xs tracking-wider text-red">{p.data.series}</span>
+            <h3 class="mt-1 text-lg font-medium text-ink leading-snug">{p.data.title}</h3>
+            <p class="mt-2 text-sm text-ink/60 leading-relaxed line-clamp-2 flex-1">{p.data.summary}</p>
+            <span class="mt-4 font-mono text-xs text-red inline-flex items-center gap-2
                          group-hover:gap-3 transition-all">
               Full specification
               <span aria-hidden="true">&rarr;</span>

@@ -212,10 +212,11 @@
    above, kept as separate classes so its script doesn't cross-wire with
    the homepage product explorer's own tabs. */
 .nav-tab {
-  position: relative; transition: color .25s ease, background-color .25s ease;
+  position: relative;
+  transition: color .25s ease, background-color .25s ease, border-color .25s ease;
   border-left: 3px solid transparent;
 }
-.nav-tab.active { color: #D51E28; background: rgba(213,30,40,.05); border-left-color: #D51E28; }
+.nav-tab:hover, .nav-tab.active { color: #D51E28; background: rgba(213,30,40,.05); border-left-color: #D51E28; }
 .nav-tab.active .nav-tab-arrow { background: #D51E28; border-color: #D51E28; color: #fff; }
 .nav-tab-arrow { transition: background-color .25s ease, border-color .25s ease, color .25s ease; }
 .nav-panel { display: none; }
